@@ -4,7 +4,7 @@ Test The Rest
 This is a utility/tool to test your JSON based restful services. Currently available as Chrome App.
 
 
-1. Write test cases on the restful service , validate the response and apply asserts.
+1. Write test cases on your  restful services , validate the response JSON,response headers and apply Assertions.
 
 2. Orchestrate  your restful service to do end to end testing.
 
