@@ -45,6 +45,9 @@ var testCaseObj=null;
     // validate the response
     var validateTest = function(status, headers, response, test) {
       $self.stats.testcase.total++;
+      if (typeof response == 'string' || response instanceof String){
+        response = JSON.parse(response);
+      }
       if (status == 200) {
         if (test && test.res_assertions) {
 
@@ -53,10 +56,10 @@ var testCaseObj=null;
             console.info("validating assert :" + test.res_assertions[i].assertName);
             $self.stats.asserts.total++;
             var ev=null;
-            if(test.res_assertions[i].expBody){
-              var ev = jsNavi.startValidation(response, test.res_assertions[i].expBody);
+            if(test.res_assertions[i].assertType && test.res_assertions[i].assertType=="response"){
+              var ev = jsNavi.startValidation(response, test.res_assertions[i].expression);
             }else{
-              ev = jsNavi.startValidation(headers, test.res_assertions[i].expHeader);
+              ev = jsNavi.startValidation(headers, test.res_assertions[i].expression);
             }
 
             test.res_assertions[i].assertStatus = _TEST_STATUS_PASS;
@@ -119,6 +122,8 @@ var testCaseObj=null;
 
     }
 
+
+
     return {
 
       "executeTest": executeTest,
@@ -137,24 +142,35 @@ var testCaseObj=null;
       var ajax = new XMLHttpRequest();
       var allHeadersReg = /(^.+)/gm;
 
+      var evalParam= function(param){
+        var value='';
+        if (param && (param=param.trim())!=='') {
+
+                if(param.indexOf('{')==0 && param.indexOf('}')==(param.length-1)){
+                   value= param.substring(1,param.length-1);
+                  value = jsNavi.startValidation(testCaseObj, value);
+                  //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
+                }/*else if(param.indexOf('=')==0){
+                  headerValue=headers[keys[i]];
+                }*/else{
+                value=param;
+                }
+
+        }//if
+        return value;
+      }// evalParam
+
 
       var setHeaders = function(headers) {
         if (headers) {
-          var keys = Object.keys(headers);
-
-          for (var i = 0; i < keys.length; i++) {
-            var headerValue=null;
-            if(headers[keys[i]] && headers[keys[i]].indexOf('=')!=-1){
-              headerValue= headers[keys[i]].substring(headers[keys[i]].indexOf('=')+1,headers[keys[i]].length);
 
 
-              headerValue = jsNavi.startValidation(testCaseObj, headerValue);
-              console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
-            }else{
-              headerValue=headers[keys[i]];
-            }
-            ajax.setRequestHeader(keys[i], headerValue);
-            console.log('setting headers ' + keys[i] + '==' + headerValue)
+          for (var i = 0; i < headers.length; i++) {
+            var key = Object.keys(headers[i]);
+            var headerValue=evalParam(headers[i][key]);
+
+            ajax.setRequestHeader(key, headerValue);
+            console.log('setting headers ' + key + '==' + headerValue)
           }
         }
 
@@ -180,13 +196,14 @@ var testCaseObj=null;
       var paramToString = function(param) {
         _ret = '';
         if (param) {
-          var keys = Object.keys(param);
 
-          for (var i = 0; i < keys.length; i++) {
+
+          for (var i = 0; i < param.length; i++) {
+            var key = Object.keys(param[i]);
             if (i != 0) {
               _ret += '&'
             }
-            _ret += keys[i] + '=' + param[keys[i]]
+            _ret += key + '=' + evalParam(param[i][key]);
           }
         }
         return _ret;
@@ -197,7 +214,7 @@ var testCaseObj=null;
           ajax.timeout = !timeout?500:timeout;
           ajax.open('GET', url + '?' + paramToString(param), true);
           ajax.onreadystatechange = function() {
-            if (ajax.readyState == 4) {
+            if (ajax.readyState == 4 && ajax.status != 0) {
 
               callBackParam.endTime =(new Date()).getTime();
               callBackFunc(ajax.status, buildHeaders(ajax.getAllResponseHeaders()), ajax.responseText, callBackParam);
@@ -217,7 +234,7 @@ var testCaseObj=null;
            ajax.timeout = !timeout?500:timeout;
           ajax.open('POST', url, true);
           ajax.onreadystatechange = function() {
-            if (ajax.readyState == 4 && ajax.status == 200) {
+            if (ajax.readyState == 4 && ajax.status != 0) {
               callBackParam.endTime =(new Date()).getTime();
               callBackFunc(ajax.status, buildHeaders(ajax.getAllResponseHeaders()), ajax.responseText, callBackParam);
             }

@@ -138,6 +138,65 @@ var copy = function (event){
 
 }
 
+var deleteHeader = function(event){
+  var e = event || window.event;
+  var ids = event.target.getAttribute('data').split("-");
+  var id = ids[0];
+  var key = ids[2];
+  var ev = jsNavi.startValidation(config, document.getElementById(id).getAttribute('data'));
+  if(ev.req_headers){
+    delete ev.req_headers[key];
+
+  }
+  event.target.parentElement.parentElement.style.display='none';
+
+}
+var addHeader = function(event){
+  $( ".addHeaderElement").unbind( "click");
+  $( ".deleteHeaderElement").unbind( "click");
+
+  var e = event || window.event;
+  var elementId = event.target.getAttribute('data');
+  var key=null;
+  var value='_blank';
+  var rowElement = document.getElementById('headers'+elementId);
+
+  var ev = jsNavi.startValidation(config, document.getElementById(elementId).getAttribute('data'));
+  if(ev.req_headers){
+    key=Object.keys(ev.req_headers).length;
+      ev.req_headers[key]=value;
+  }
+
+
+  //var header ='<div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+keys[i]+'" class="deleteHeaderElement" >-</a>key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+keys[i]+'" value="'+keys[i]+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+ev.req_headers[keys[i]]+'" value="'+ev.req_headers[keys[i]]+'"></div>';
+
+  var header= '<div class="row"><div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+key+'" class="deleteHeaderElement" >-</a>'+
+  'key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+key+'" value="'+key+'"></div>'+
+   '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+value+'" value="'+value+'"></div></div>';
+
+  //var header = '<div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+key+'" class="deleteHeaderElement" >-</a>key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+key+'" value="'+key+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+value+'" value="'+value+'"></div>';
+  var div = document.createElement('div');
+div.innerHTML = header;
+var element = div.firstChild;
+  rowElement.appendChild(element);
+  div.innerHTML=null;
+
+  $('.addHeaderElement').click(function(e){
+    addHeader(e);
+  });
+  $('.deleteHeaderElement').click(function(e){
+    deleteHeader(e);
+  });
+
+
+}
+var deleteParam = function(event){
+  var e = event || window.event;
+}
+var addParam = function(event){
+  var e = event || window.event;
+}
+
 var save = function (event){
   var e = event || window.event;
   var ev =  jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
@@ -199,6 +258,27 @@ var save = function (event){
 
               }
           }
+          if(ev.res_assertions){
+
+            //  var keys = Object.keys(ev.req_params);
+
+              for (var i = 0; i < ev.res_assertions.length; i++) {
+                var assert = ev.res_assertions[i];
+                var aName =document.getElementById(identifier+'-formTestAssertion-'+assert.assertName).value;
+                var aValue=document.getElementById(identifier+'-formTestAssertion-'+assert.expression).value;
+                if(aName !=assert.assertName){
+                  delete ev.res_assertions[i];
+                }
+                ev.res_assertions[i]={
+                  "assertName": aName,
+                  "assertType":"response",
+                  "expression": aValue
+                }
+
+              }
+
+
+          }
 
      }else if(ev.testSuitName){
            //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formTestSuitName" value="'+ev.testSuitName+'"></div></div>'+'</div></div>';
@@ -218,6 +298,8 @@ var save = function (event){
 
 
 var edit = function (event){
+  $( ".addHeaderElement").unbind( "click");
+  $( ".deleteHeaderElement").unbind( "click");
     var e = event || window.event;
     var elementId=e.target.parentElement.parentElement.getAttribute('id');
     var testForm = document.getElementById("testform"+elementId);
@@ -240,19 +322,38 @@ var edit = function (event){
            '<div class="row"><div class="col-xs-12"><input class="formTestinput" type="text" id="'+elementId+'-formTestUrl" value="'+ev.url+'"></div> </div>'+
             '<div class="row"> <div class="col-xs-6"><div class="formTesttitle">method</div></div> <div class="col-xs-6"><div class="formTesttitle">time Out</div></div> </div> <div class="row"> <div class="col-xs-6"><input class="formTestinput" type="text" id="'+elementId+'-formTestMethod" value="'+ev.method+'"></div> <div class="col-xs-6"><input class="formTestinput" type="text" id="'+elementId+'-formTestTimeout" value="'+ev.timeout+'"></div> </div> ';
               if(ev.req_headers){
-                   inHtml+= '<div class="row"><div class="col-xs-12"><div class="formTesttitle">header</div></div></div><div class="row">';
+                   inHtml+= '<div class="row"><div class="col-xs-12"><h3>header</h3><a href="#" data="'+elementId+'" class="addHeaderElement" >+</a></div></div><div class="row" ><div class="col-xs-12" id="headers'+elementId+'">';
                   var keys = Object.keys(ev.req_headers);
                   for (var i = 0; i < keys.length; i++) {
-                   inHtml+= '<div class="col-xs-6">key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+keys[i]+'" value="'+keys[i]+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+ev.req_headers[keys[i]]+'" value="'+ev.req_headers[keys[i]]+'"></div>';
+                   inHtml+= '<div class="row"><div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+keys[i]+'" class="deleteHeaderElement" >-</a>'+
+                   'key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+keys[i]+'" value="'+keys[i]+'"></div>'+
+                    '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+ev.req_headers[keys[i]]+'" value="'+ev.req_headers[keys[i]]+'"></div></div>';
                   }
-                  inHtml+= '</div>';
+                  inHtml+= '</div></div>';
 
               }
               if(ev.req_params){
-                   inHtml+= '<div class="row"><div class="col-xs-12"><div class="formTesttitle">Param</div></div></div><div class="row">';
+                   inHtml+= '<div class="row"><div class="col-xs-12"><h3>Param</h3><a href="#" data="'+elementId+'" class="addParamElement" >+</a></div></div>';
                   var keys = Object.keys(ev.req_params);
                   for (var i = 0; i < keys.length; i++) {
-                   inHtml+= '<div class="col-xs-6">key : <input class="formTestinput" type="text" id="'+elementId+'-formTestParam-'+keys[i]+'" value="'+keys[i]+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestParam-'+ev.req_params[keys[i]]+'" value="'+ev.req_params[keys[i]]+'"></div>';
+                   inHtml+= '<div class="row"><div class="col-xs-6"><a href="#" data="'+elementId+'-formTestParam-'+keys[i]+'" class="deleteElement" >'+
+                                    '</a>key : <input class="formTestinput" type="text" id="'+elementId+'-formTestParam-'+keys[i]+'" value="'+keys[i]+'"></div>'+
+                   '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestParam-'+ev.req_params[keys[i]]+'" value="'+ev.req_params[keys[i]]+'"></div></div>';
+                  }
+                //  inHtml+= '</div>';
+
+              }
+
+              if(ev.res_assertions){
+                   inHtml+= '<div class="row"><div class="col-xs-12"><h3>Asserts</h3></div></div><div class="row">';
+                //  var keys = Object.keys(ev.req_params);
+
+                  for (var i = 0; i < ev.res_assertions.length; i++) {
+                    var assert = ev.res_assertions[i];
+                    inHtml+= '<div class="col-xs-6">assertName : <input class="formTestinput" type="text" id="'+elementId+'-formTestAssertion-'+assert.assertName+'" value="'+assert.assertName+'"></div>';
+                    var type = assert.assertType=="response"?'response':'header';
+                    inHtml+='<div class="col-xs-6">value for '+type+': <input class="formTestinput" type="text" id="'+elementId+'-formTestAssertion-'+assert.expression+'" value="'+assert.expression+'"></div>';
+
                   }
                   inHtml+= '</div>';
 
@@ -284,6 +385,13 @@ var edit = function (event){
 
          }
           //registerAction();
+          $('.addHeaderElement').click(function(e){
+            addHeader(e);
+          });
+          $('.deleteHeaderElement').click(function(e){
+            deleteHeader(e);
+          });
+
           testForm.style.display='block';
      }
 
@@ -571,7 +679,7 @@ var exportResult = function(event){
 
     $('#testCaseFile').change( upload);
     $("#exportTestCase").click(exportTestCase);
-    exportTestCase
+
   }
   registerAction();
   return {
