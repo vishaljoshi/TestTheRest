@@ -97,13 +97,21 @@ var dashboard = function($doc, config) {
     event = event || window.event;
     //event.target.data
     //  document.getElementById("statsView").style.display = "none";
+    document.getElementById("progress").style.display="block";
     document.getElementById("consoleView").innerHTML = null;
     //  console.log(event.target.parentElement.getAttribute('data'));
-    var stats = main.runner(config, event.target.parentElement.parentElement.getAttribute('data'));
+    var stats = main.runner(config, event.target.parentElement.parentElement.getAttribute('data'),testCompleted);
     //  console.log("assert3==" + stats.asserts.total);
 
     event.stopPropagation();
     return true;
+  }
+
+  var testCompleted = function(status) {
+    var _statsEvent = new evntObj(EVENT_STATS,status);
+    eventBus.notify(_statsEvent)
+    document.getElementById("progress").style.display="none";
+console.log("All tests completed");
   }
 
   var copy = function(event) {
@@ -420,7 +428,7 @@ var dashboard = function($doc, config) {
 
 
       testForm.innerHTML = null;
-      var inHtml = '<div class="panel panel-info" > <div class="panel-heading"><h3 class="panel-title">Edit</h3></div><div class="panel-body">';
+      var inHtml = '<div class="panel panel-primary" > <div class="panel-heading"><h3 class="panel-title">Edit</h3></div><div class="panel-body">';
       if (parent && ev) {
         if (ev.testName) {
 
@@ -611,6 +619,7 @@ var dashboard = function($doc, config) {
       initDash(e.target.result);
 
     }
+    document.getElementById("uploadFile").value = file.name;
   };
 
 

@@ -44,9 +44,9 @@
 
     <div class="container-fluid">
 
-      <div class="blog-header">
-        <h1 class="blog-title">Test the Rest</h1>
-        <p class="lead blog-description">Test in Peace...... ^^</p>
+      <div class="header">
+        <h1 class="title">Test The Rest</h1>
+        <p class="description"> Test in Peace...... ^^</p>
       </div>
 
       <div class="row">
@@ -54,12 +54,24 @@
         <div class="col-sm-8 blog-main">
 
           <div class="blog-post">
-            <!--h3 class="text-muted">Load the test cases</h3-->  <input type="file" id="testCaseFile" >  <a href="#" id="exportTestCase">download test cases</a>
+            <!--h3 class="text-muted">Load the test cases</h3-->
+            <input id="uploadFile" placeholder="Choose File" disabled="disabled" />
+<div class="fileUpload btn btn-primary">
+    <span class="glyphicon glyphicon-upload"> Upload</span>
+    <input id="testCaseFile" type="file" class="upload" />
+</div>
+<div class="btn btn-primary">
+    <span class="glyphicon glyphicon-upload"  id="exportTestCase"> Download</span>
+
+</div>
+
+
+
+
 
                 <div class="row marketing">
                   <div class="tree well">
                     <ul id="projectNav">
-
                     </ul>
                   </div>
                 </div>
@@ -80,7 +92,7 @@
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
           <div class="sidebar-module sidebar-module-inset">
 
-                        <div class="panel panel-info" id="statsView">
+                        <div class="panel panel-primary" id="statsView">
                           <div class="panel-heading">
                             <h3 class="panel-title">Stats</h3>
                           </div>
@@ -113,9 +125,8 @@
                         </div>
           </div>
           <div class="sidebar-module">
-                <div id="consoleView">
-
-                </div>
+                <div id="progress" class="progress"></div>
+                <div id="consoleView"></div>
           </div>
 
         </div><!-- /.blog-sidebar -->
@@ -125,7 +136,7 @@
     </div><!-- /.container -->
 
     <footer class="blog-footer">
-      <p><a href="#">testTheRest</a> by <a href="#">@Vishal Joshi</a>.</p>
+      <p><a href="#">testTheRest</a> by <a href="#">@Vishal Joshi</a>. Version 0.2(Beta)</p>
       <p>
 
       </p>
