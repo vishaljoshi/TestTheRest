@@ -3,6 +3,18 @@
  * @desc this is small utility for validating the json and parsing it
  *
  */
+ var _TEST_STATUS_PASS = 'pass';
+ var _TEST_STATUS_FAIL='Error';
+ var _TEST_STATUS_INPROGRESS='inprogress';
+ var _HTTP_TIME_OUT = 'TIME_OUT';
+ var _HTTP_ERROR = 'ERROR';
+ var _HTTP_ABORT = 'ABORT';
+
+ var EVENT_STATS='EVENT_STATS';
+
+
+
+
 var testTheRest = function(jsNavi,eventBus) {
 
 var testCaseObj=null;
@@ -26,9 +38,6 @@ var testCaseObj=null;
       fail: 0
     }
   }
-  var _TEST_STATUS_PASS = 'pass';
-  var _TEST_STATUS_FAIL='Error';
-  var EVENT_STATS='EVENT_STATS';
 
 
   function restEngine(_util) {
@@ -45,10 +54,14 @@ var testCaseObj=null;
     // validate the response
     var validateTest = function(status, headers, response, test) {
       $self.stats.testcase.total++;
-      if (typeof response == 'string' || response instanceof String){
-        response = JSON.parse(response);
-      }
+      var errorMessage=null;
       if (status == 200) {
+        if (typeof response == 'string' || response instanceof String){
+          try{
+            response = JSON.parse(response);
+          }catch(er){  console.error("test case failed, response incorrect :" + test.testName);}
+
+        }
         if (test && test.res_assertions) {
 
           var testStatus = _TEST_STATUS_PASS
@@ -67,7 +80,9 @@ var testCaseObj=null;
               testStatus = _TEST_STATUS_FAIL;
               test.res_assertions[i].assertStatus = _TEST_STATUS_FAIL;
               $self.stats.asserts.fail++;
-               console.error("assert  failed expression :" + test.res_assertions[i].assertName);
+
+               errorMessage="assert  failed expression :" + test.res_assertions[i].assertName;
+               console.error(errorMessage);
             }
           }
           test.testStatus = testStatus;
@@ -79,15 +94,16 @@ var testCaseObj=null;
           }
 
         } else {
-          console.warn("error,no test to validate");
+          console.warn("error,no assertions");
         }
       } else {
         test.testStatus =_TEST_STATUS_FAIL;
         $self.stats.testcase.fail++
-        console.error("test case failed : bad response from the server");
+        errorMessage= "test case failed : bad response from the server HTTP status:"+status+ ", "+response;
+        console.error(errorMessage);
       }
 
-      var _statsEvent = new evntObj(EVENT_STATS,$self.stats);
+      var _statsEvent = new evntObj(EVENT_STATS,{'stats':$self.stats,'testId':test.id,'testStatus':test.testStatus,'errorMessage':errorMessage});
       eventBus.notify(_statsEvent)
       setInProgress(false);
       console.info("**************************end test********************");
@@ -100,8 +116,12 @@ var testCaseObj=null;
     // execute the test
     var executeTest = function(_test) {
       if (_test) {
+        _test.testStatus=_TEST_STATUS_INPROGRESS;
+        var _statsEvent = new evntObj(EVENT_STATS,{'stats':$self.stats,'testId':_test.id,'testStatus':_test.testStatus});
+        eventBus.notify(_statsEvent)
         console.info("**************************start test**********************************************");
         console.info("executing test : " + _test.testName);
+
         setInProgress(true);
         _test.req_body = null;
         _test.res_headers=null;
@@ -144,18 +164,22 @@ var testCaseObj=null;
 
       var evalParam= function(param){
         var value='';
-        if (param && (param=param.trim())!=='') {
 
-                if(param.indexOf('{')==0 && param.indexOf('}')==(param.length-1)){
-                   value= param.substring(1,param.length-1);
-                  value = jsNavi.startValidation(testCaseObj, value);
-                  //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
-                }/*else if(param.indexOf('=')==0){
-                  headerValue=headers[keys[i]];
-                }*/else{
-                value=param;
-                }
 
+        if (param) {
+          if((typeof param == 'string' || param instanceof String) && (param=param.trim())!=='' ){
+            if(param.indexOf('{')==0 && param.indexOf('}')==(param.length-1)){
+               value= param.substring(1,param.length-1);
+              value = jsNavi.startValidation(testCaseObj, value);
+              //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
+            }/*else if(param.indexOf('=')==0){
+              headerValue=headers[keys[i]];
+            }*/else{
+            value=param;
+            }
+          }else{
+            value=param;
+          }
         }//if
         return value;
       }// evalParam
@@ -210,6 +234,7 @@ var testCaseObj=null;
       }
       return {
         get: function(url, headers, param,timeout, callBackFunc, callBackParam) {
+          try{
         callBackParam.startTime =(new Date()).getTime();
           ajax.timeout = !timeout?500:timeout;
           ajax.open('GET', url + '?' + paramToString(param), true);
@@ -220,13 +245,35 @@ var testCaseObj=null;
               callBackFunc(ajax.status, buildHeaders(ajax.getAllResponseHeaders()), ajax.responseText, callBackParam);
             }
           };
+
+
+
+
           ajax.ontimeout = function(){
-            console.error('time out:');
-            callBackFunc(ajax.status, null, null, callBackParam);
+            console.error('on time out:'+ajax.timeout);
+            callBackFunc(_HTTP_TIME_OUT, null, 'resquest timed out at '+ajax.timeout+' ms.', callBackParam);
+          };
+          ajax.onerror = function(er){
+            console.error('on error:'+er);
+            callBackFunc(_HTTP_ERROR, null, 'an error occured while making the request ', callBackParam);
           };
 
+          ajax.onabort = function(){
+            console.error('on abort:');
+            callBackFunc(_HTTP_ABORT, null, 'the request is aborted', callBackParam);
+          };
+
+
+
+
           setHeaders(headers);
-          ajax.send();
+
+            ajax.send();
+          }catch(er){
+            console.error('error :'+er);
+            callBackFunc(ajax.status, null, 'an error has occured while making the request', callBackParam);
+          }
+
 
         },
         post: function(url, headers, param, timeout,callBackFunc, callBackParam) {
@@ -269,7 +316,7 @@ var testCaseObj=null;
 
 
 
-  var runner = function(testConfi, runConfi) {
+  var runner = function(testConfi, runConfi ,completedFunc) {
     testCaseObj=testConfi;
     $self.stats = {
       project: {
@@ -337,12 +384,18 @@ var testCaseObj=null;
   //   console.log("anyThingToTest queue size="+testQueue.length+', restEn.inprogress='+restEn.getInProgress());
 
        if(!restEn.getInProgress()){
-        var test= testQueue.shift();
-         restEn.executeTest(test);
+         if(testQueue.length>0){
+           var test= testQueue.shift();
+            restEn.executeTest(test);
+
+         }else{
+           clearInterval(isRunning);
+           console.info('All test Completed!');
+           completedFunc($self.stats);
+         }
+
        }
-       if(testQueue.length<=0){
-            clearInterval(isRunning);
-       }
+
 
     }
 

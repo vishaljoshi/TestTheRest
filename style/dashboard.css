@@ -46,6 +46,12 @@ html {
 
 /*                  for console               */
 
+
+.main-section{
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
 .console{
   display:block;
   background-color:white;
@@ -57,7 +63,7 @@ html {
   color:blue;
 }
 .error{
-  color:red;
+  color:rgb(252, 4, 4);
 }
 .warning{
   color:orange;
@@ -72,9 +78,31 @@ padding-left: 2px;
   padding: 2px 5px;
   text-align: center;
   border: 1px solid;
-  border-color: #999;
+
   border-radius: 15px;
   margin-left: 5px;
+  color: rgb(85, 85, 85);
+
+}
+
+.testcontroller .controls:hover,
+.testcontroller .controls:focus {
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: rgb(77, 144, 254);
+  border-color: rgb(48, 121, 237);
+}
+.save{
+  float: right;
+  color: inherit !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.testcontroller  a{
+/*color:#1B23EC;*/
+color:rgb(85, 85, 85);
 
 }
 
@@ -95,4 +123,97 @@ border-radius: 10px;
 
 .deleteTestHeader{
   display:none;
+}
+.btn-primary {
+  background-color: rgb(77, 144, 254);
+  border-color: rgb(48, 121, 237);
+}
+.panel-primary{
+
+  border-color: rgb(48, 121, 237);
+}
+
+.panel-primary>.panel-heading{
+  background-color: rgb(77, 144, 254);
+  border-color: rgb(48, 121, 237);
+}
+.progress{
+  display: none;
+  background: url(/progress.gif) no-repeat 53% 0px;
+  background-size: 93px 80px;
+  height: 80px;
+
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.testPass{
+  color:rgb(29, 205, 10)!important;
+  font-weight: 600;
+}
+.testFail{
+    color:rgb(252, 4, 4)!important;
+    font-weight: 600;
+
+}
+
+@-webkit-keyframes  testInprogress {
+
+    from{  text-decoration: underline;color:#1B23EC!important;}
+    to{  text-decoration: none;  color:rgb(85, 85, 85);}
+
+}
+.testInprogress{
+
+    text-decoration: underline;
+    color:#1B23EC!important;;
+    font-weight: 600;
+
+
+    -webkit-animation-name: testInprogress; /* Chrome, Safari, Opera */
+   -webkit-animation-duration: 1s; /* Chrome, Safari, Opera */
+   -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
+
+}
+.testName{
+  text-decoration: underline;
+}
+
+
+a.itooltip {outline:none; }
+a.itooltip strong {line-height:30px;}
+a.itooltip:hover {text-decoration:none;}
+a.itooltip div {
+    z-index:10;display:none; padding:14px 20px;
+    margin-top:-30px; margin-left:28px;
+    width:300px; line-height:16px;
+    -webkit-transition: display 3s; /* Safari */
+    -webkit-transition-delay: 5s; /* Safari */
+    transition: display 3s;
+    transition-delay: 5s;
+}
+a.itooltip:hover div{
+    display:inline; position:absolute; color:#111;
+    border:1px solid #DCA; background:#fffAF0;}
+.callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
+
+/*CSS3 extras*/
+a.itooltip div
+{
+    border-radius:4px;
+    box-shadow: 5px 5px 8px #CCC;
 }

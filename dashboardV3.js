@@ -9,24 +9,12 @@
 
 */
 
+
 window.addEventListener('load', loadHandler);
 
 function loadHandler() {
 
-  function treenode() {
-    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-    $('.tree li.parent_li > span').on('click', function(e) {
-      var children = $(this).parent('li.parent_li').find(' > ul > li');
-      if (children.is(":visible")) {
-        children.hide('fast');
-        $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
-      } else {
-        children.show('fast');
-        $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
-      }
-      e.stopPropagation();
-    });
-  };
+
 
 
   window.initDash = function(struct) {
@@ -44,9 +32,18 @@ function loadHandler() {
       data = struct
     }
     window.dash = dashboard(document, data);
-    treenode();
+
   }
   initDash(defaultStruct);
+
+
+  $(document).ready(function () {
+  $('[data-toggle="offcanvas"]').click(function () {
+    $('.row-offcanvas').toggleClass('active')
+  });
+  });
+
+
 
 }
 
@@ -100,6 +97,9 @@ var dashboard = function($doc, config) {
     document.getElementById("progress").style.display="block";
     document.getElementById("consoleView").innerHTML = null;
     //  console.log(event.target.parentElement.getAttribute('data'));
+    var id = event.target.parentElement.parentElement.id;
+    $('#'+id).find('.testName').removeClass('testFail');
+    $('#'+id).find('.testName').removeClass('testPass');
     var stats = main.runner(config, event.target.parentElement.parentElement.getAttribute('data'),testCompleted);
     //  console.log("assert3==" + stats.asserts.total);
 
@@ -108,10 +108,10 @@ var dashboard = function($doc, config) {
   }
 
   var testCompleted = function(status) {
-    var _statsEvent = new evntObj(EVENT_STATS,status);
-    eventBus.notify(_statsEvent)
+  //  var _statsEvent = new evntObj(EVENT_STATS,status);
+  //  eventBus.notify(_statsEvent)
     document.getElementById("progress").style.display="none";
-console.log("All tests completed");
+
   }
 
   var copy = function(event) {
@@ -334,7 +334,9 @@ console.log("All tests completed");
       var identifier = ev.id;
       if (ev.testName) {
 
+
         ev.testName = document.getElementById(identifier + '-formTestName').value;
+        event.target.innerHTML = ev.testName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.testName+'</strong><br /><p class="testDesc"></p></div>';
         ev.url = document.getElementById(identifier + '-formTestUrl').value;
         ev.method = document.getElementById(identifier + '-formTestMethod').value;
         ev.timeout = document.getElementById(identifier + '-formTestTimeout').value;
@@ -400,17 +402,19 @@ console.log("All tests completed");
       } else if (ev.testSuitName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formTestSuitName" value="'+ev.testSuitName+'"></div></div>'+'</div></div>';
         ev.testSuitName = document.getElementById(identifier + '-formTestSuitName').value;
+        event.target.innerHTML = ev.testSuitName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.testSuitName+'</strong><br /><p class="testDesc"></p></div>';
 
       } else if (ev.projectName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formProjectName" value="'+ev.projectName+'"></div></div>';
         ev.projectName = document.getElementById(identifier + '-formTestProjectName').value;
+        event.target.innerHTML = ev.projectName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.projectName+'</strong><br /><p class="testDesc"></p></div>';
       }
       //registerAction();
       //  testForm.style.display='block';
-      load(config);
+    //  load(config);
     }
     e.stopPropagation();
-
+console.info('saved');
   }
 
 
@@ -428,7 +432,7 @@ console.log("All tests completed");
 
 
       testForm.innerHTML = null;
-      var inHtml = '<div class="panel panel-primary" > <div class="panel-heading"><h3 class="panel-title">Edit</h3></div><div class="panel-body">';
+      var inHtml = '<div class="panel panel-primary" > <div class="panel-heading"><h3 class="panel-title">Edit <a class="save">save</a></h3></div><div class="panel-body">';
       if (parent && ev) {
         if (ev.testName) {
 
@@ -557,6 +561,10 @@ console.log("All tests completed");
         $('.deleteAssertElement').click(function(e) {
           deleteAssert(e);
         });
+        //registerAction();
+        $('.save').click(function(e) {
+          save(event);
+        });
 
         testForm.style.display = 'block';
       }
@@ -578,6 +586,8 @@ console.log("All tests completed");
     var parentNode = event.target.parentElement.parentElement.parentElement;
     if (parent) {
       var ind = null;
+
+      // need to use id
       for (var i = 0; i < parent.length; i++) {
         ind = i;
         if (ev.testName && parent[i].testName === ev.testName) {
@@ -681,7 +691,7 @@ console.log("All tests completed");
     //$doc.getElementById("statsView").style.display = "none";
     if (config) {
       var projectNav = $doc.getElementById("projectNav");
-
+      projectNav.innerHTML = null;
       var projects = config.projects;
       var _DIVWRAP = $doc.createElement("DIV");
       _DIVWRAP.class = "tree well";
@@ -728,22 +738,37 @@ console.log("All tests completed");
             }
             _LIpro.appendChild(_ULtestSuit);
           }
-          projectNav.innerHTML = null;
           projectNav.appendChild(_LIpro);
         }
-      }
-    }
+      }// if projects
+    }// if config
+
+    treenode();
+
   }
 
-
+   var treenode =function () {
+    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+    $('.tree li.parent_li > span').on('click', function(e) {
+      var children = $(this).parent('li.parent_li').find(' > ul > li');
+      if (children.is(":visible")) {
+        children.hide('fast');
+        $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+      } else {
+        children.show('fast');
+        $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+      }
+      e.stopPropagation();
+    });
+  };
   var getNode = function(name, type, id) {
     var _li = $doc.createElement("li");
     var testcontroller = $doc.createElement("div");
 
     testcontroller.className = "testcontroller";
     var titleTest = $doc.createElement("a");
-
-    titleTest.innerText = name;
+    titleTest.className = "itooltip testName";
+    titleTest.innerHTML = name+'<div> <img class="callout" src="callout.gif" /><strong>'+name+'</strong><br /><p class="testDesc"></p></div>';
     titleTest.onclick = edit;
 
     //  var addtestLi = $doc.createElement("li");
@@ -822,7 +847,10 @@ console.log("All tests completed");
 
   var showStats = function(e) {
     console.log("showStats==" + e.getName());
-    var stats = e.getData();
+    var stats = e.getData().stats;
+    var testId = e.getData().testId;
+    var status = e.getData().testStatus;
+    var errorMessage =  e.getData().errorMessage;
     $doc.getElementById("stats.pro.total").innerHTML = stats.project.total;
     $doc.getElementById("stats.pro.fail").innerHTML = stats.project.fail;
     $doc.getElementById("stats.testSuit.total").innerHTML = stats.testSuit.total;
@@ -832,6 +860,29 @@ console.log("All tests completed");
     $doc.getElementById("stats.asserts.total").innerHTML = stats.asserts.total;
     $doc.getElementById("stats.asserts.fail").innerHTML = stats.asserts.fail;
     //  $doc.getElementById("statsView").style.display = "block";
+
+    // update the test case labels:
+
+    if(testId && status ){
+      $('#'+testId).find('.testName').removeClass('testFail');
+      $('#'+testId).find('.testName').removeClass('testPass');
+      $('#'+testId).find('.testName').removeClass('testInprogress');
+      if(status==_TEST_STATUS_INPROGRESS){
+        $('#'+testId).find('.testName').addClass('testInprogress');
+        $('#'+testId).find('.testDesc').text("test in progress ...");
+
+
+      }else if (status==_TEST_STATUS_PASS){
+        $('#'+testId).find('.testName').addClass('testPass');
+        $('#'+testId).find('.testDesc').text("test is a success :)");
+      }else{
+        $('#'+testId).find('.testName').addClass('testFail');
+        $('#'+testId).find('.testDesc').text("test is a failure :( , "+errorMessage);
+      }
+
+
+    }
+
 
   }
   eventBus.register('EVENT_STATS', showStats);

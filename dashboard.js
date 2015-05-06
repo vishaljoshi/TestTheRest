@@ -8,24 +8,25 @@
 
 
 */
+function treenode() {
+  $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+  $('.tree li.parent_li > span').on('click', function(e) {
+    var children = $(this).parent('li.parent_li').find(' > ul > li');
+    if (children.is(":visible")) {
+      children.hide('fast');
+      $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+    } else {
+      children.show('fast');
+      $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+    }
+    e.stopPropagation();
+  });
+};
+
 
 window.addEventListener('load', loadHandler);
 function loadHandler()   {
 
-    function treenode() {
-      $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-      $('.tree li.parent_li > span').on('click', function(e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
-        if (children.is(":visible")) {
-          children.hide('fast');
-          $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
-        } else {
-          children.show('fast');
-          $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
-        }
-        e.stopPropagation();
-      });
-    };
 
 
      window.initDash= function(struct){
@@ -35,7 +36,7 @@ function loadHandler()   {
        // main.executeTest(testData.tests[0]);
          var data=null;
          document.getElementById("consoleView").innerHTML=null;
-         document.getElementById("projectNav").innerHTML=null;
+
 
        if (typeof struct == 'string' || struct instanceof String){
           data = JSON.parse(struct);
@@ -43,7 +44,7 @@ function loadHandler()   {
           data=struct
         }
          window.dash = dashboard(document, data);
-        treenode();
+
       }
      initDash(defaultStruct);
 
@@ -94,6 +95,7 @@ consolechange();
 
  var play  =function (event) {
       event = event || window.event;
+      document.getElementById("progress").style.display="block";
       //event.target.data
     //  document.getElementById("statsView").style.display = "none";
       document.getElementById("consoleView").innerHTML = null;
@@ -311,7 +313,7 @@ var edit = function (event){
 
 
       testForm.innerHTML=null;
-      var inHtml='<div class="panel panel-info" > <div class="panel-heading"><h3 class="panel-title">Edit</h3></div><div class="panel-body">';
+      var inHtml='<div class="panel panel-primary" > <div class="panel-heading"><h3 class="panel-title">Edit</h3></div><div class="panel-body">';
       if(parent && ev){
          if(ev.testName){
 
@@ -453,6 +455,10 @@ console.log("remove");
     initDash(e.target.result);
 
     }
+
+    
+
+
 };
 
 
@@ -512,6 +518,7 @@ var exportResult = function(event){
 
   var load = function(config) {
     //$doc.getElementById("statsView").style.display = "none";
+    document.getElementById("projectNav").innerHTML=null;
     if (config) {
       var projectNav = $doc.getElementById("projectNav");
 
@@ -565,6 +572,7 @@ var exportResult = function(event){
           projectNav.appendChild(_LIpro);
         }
       }
+      treenode();
     }
   }
 

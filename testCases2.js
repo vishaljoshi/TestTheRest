@@ -11,7 +11,7 @@
               "testName": "IBX list",
               "url": "http://sv2lxgppdi01.corp.equinix.com:9000/gpp/api/ibxsByRegion/APAC",
               "method": "get",
-              "timeout": 3000,
+              "timeout": 7000,
               "req_headers": [
                 {
                   "EMAIL": "vjoshi@ap.equinix.com"
@@ -66,35 +66,35 @@
               "req_params": [],
               "res_assertions": [
                 {
-                  "assertName": " There are no errors",
+                  "assertName": " There has errors",
                   "assertType": "response",
                   "expression": "errorList=0"
                 },
                 {
-                  "assertName": "status is true",
+                  "assertName": "status is not true",
                   "assertType": "response",
                   "expression": "success=true"
                 },
                 {
-                  "assertName": "Customer is valid",
+                  "assertName": "Customer is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].customerName=TELSTRA INTERNATIONAL LIMITED"
+                  "expression": "jsonData.customers[323].customerName=LIQUIDNET ASIA LIMITED"
                 },
                 {
-                  "assertName": "ucmid is valid",
+                  "assertName": "ucmid is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].ucmid=1000002040"
+                  "expression": "jsonData.customers[323].ucmid=1000001527"
                 },
                 {
-                  "assertName": "customer number is valid",
+                  "assertName": "customer number is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].customerNumber=126141"
+                  "expression": "jsonData.customers[323].customerNumber=116853"
                 }
               ]
             },
             {
               "testName": "Customer List APAC and HK1",
-              "url": "http://sv2lxgppdi01.corp.equinix.com:9000/gpp/api/customersByRegionAndIbx/APAC/HK1/false",
+              "url": "http://sv2lxgppdi01.corp.equinix.com:9000/gpp/api/customersByRegionAndIbx/APAC/HK2/false",
               "method": "get",
               "timeout": 10000,
               "req_headers": [
@@ -111,29 +111,29 @@
               "req_params": [],
               "res_assertions": [
                 {
-                  "assertName": " There are no errors",
+                  "assertName": " There is error object",
                   "assertType": "response",
                   "expression": "errorList=0"
                 },
                 {
-                  "assertName": "status is true",
+                  "assertName": "status is not true",
                   "assertType": "response",
                   "expression": "success=true"
                 },
                 {
-                  "assertName": "Customer is valid",
+                  "assertName": "Customer is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].customerName=HEWLETT PACKARD AUSTRALIA PTY LTD"
+                  "expression": "jsonData.customers[323].customerName=LIQUIDNET ASIA LIMITED"
                 },
                 {
-                  "assertName": "ucmid is valid",
+                  "assertName": "ucmid is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].ucmid=1000003008"
+                  "expression": "jsonData.customers[323].ucmid=1000001527"
                 },
                 {
-                  "assertName": "customer number is valid",
+                  "assertName": "customer number is not valid",
                   "assertType": "response",
-                  "expression": "jsonData.customers[0].customerNumber=135074"
+                  "expression": "jsonData.customers[323].customerNumber=116853"
                 }
               ]
             }
