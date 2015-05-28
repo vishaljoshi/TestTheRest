@@ -34,7 +34,21 @@ function loadHandler() {
     window.dash = dashboard(document, data);
 
   }
-  initDash(defaultStruct);
+  chrome.runtime.getBackgroundPage(function(bgPage) {
+    console.log("bgPage.recorderSettings.isStarted"+bgPage.recorderSettings.isStarted);
+    bgPage.requestDetails;
+    var config =bgPage.importer();
+    console.log();
+    if(config){
+      initDash(config);
+    }else{
+      initDash(defaultStruct);
+    }
+
+  });
+
+
+
 
 
   $(document).ready(function () {
@@ -56,20 +70,40 @@ function consolechange() {
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     isbrowser = true
     consoleView = document.getElementById("consoleView");
+  var  consoleViewBottom = document.getElementById("consoleViewBottom");
     if (consoleView) {
       _console.info = function(msg) {
-        consoleView.innerHTML += '<span class="console info">' + msg + '</span>';
+        var info = document.createElement("span");
+        info.className = "console info";
+        info.innerText = msg;
+        consoleView.appendChild(info);
+      //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
       _console.log = function(msg) {
-        consoleView.innerHTML += '<span class="console log">' + msg + '</span>';
+
+        var log = document.createElement("span");
+        log.className = "console log";
+        log.innerText = msg;
+        consoleView.appendChild(log);
+      //  consoleView.scrollTop=consoleView.scrollHeight;
       }
       _console.error = function(msg) {
-        consoleView.innerHTML += '<span class="console error">' + msg + '</span>';
+
+        var error = document.createElement("span");
+        error.className = "console error";
+        error.innerText = msg;
+        consoleView.appendChild(error);
+      //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
       _console.warn = function(msg) {
-        consoleView.innerHTML += '<span class="console warning">' + msg + '</span>';
+
+        var warning = document.createElement("span");
+        warning.className = "console warning";
+        warning.innerText = msg;
+        consoleView.appendChild(warning);
+      //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
     } else {
@@ -336,7 +370,7 @@ var dashboard = function($doc, config) {
 
 
         ev.testName = document.getElementById(identifier + '-formTestName').value;
-        event.target.innerHTML = ev.testName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.testName+'</strong><br /><p class="testDesc"></p></div>';
+        event.target.innerHTML =   ev.testName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.testName+'</h6><p class="testDesc"></p></div>';
         ev.url = document.getElementById(identifier + '-formTestUrl').value;
         ev.method = document.getElementById(identifier + '-formTestMethod').value;
         ev.timeout = document.getElementById(identifier + '-formTestTimeout').value;
@@ -402,12 +436,13 @@ var dashboard = function($doc, config) {
       } else if (ev.testSuitName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formTestSuitName" value="'+ev.testSuitName+'"></div></div>'+'</div></div>';
         ev.testSuitName = document.getElementById(identifier + '-formTestSuitName').value;
-        event.target.innerHTML = ev.testSuitName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.testSuitName+'</strong><br /><p class="testDesc"></p></div>';
 
+        event.target.innerHTML =   ev.testSuitName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.testSuitName+'</h6><p class="testDesc"></p></div>';
       } else if (ev.projectName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formProjectName" value="'+ev.projectName+'"></div></div>';
         ev.projectName = document.getElementById(identifier + '-formTestProjectName').value;
-        event.target.innerHTML = ev.projectName+'<div> <img class="callout" src="callout.gif" /><strong>'+ev.projectName+'</strong><br /><p class="testDesc"></p></div>';
+
+        event.target.innerHTML =   ev.projectName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.projectName+'</h6><p class="testDesc"></p></div>';
       }
       //registerAction();
       //  testForm.style.display='block';
@@ -578,7 +613,7 @@ console.info('saved');
   }
 
   var minus = function(event) {
-    console.log("remove");
+    console.log("Deleted.........");
     event = event || window.event;
     // console.log(event.target.parentElement.parentElement.getAttribute('data'))
     var ev = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
@@ -768,8 +803,8 @@ console.info('saved');
     testcontroller.className = "testcontroller";
     var titleTest = $doc.createElement("a");
     titleTest.className = "itooltip testName";
-    titleTest.innerHTML = name+'<div> <img class="callout" src="callout.gif" /><strong>'+name+'</strong><br /><p class="testDesc"></p></div>';
-    titleTest.onclick = edit;
+    titleTest.innerHTML = name+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+name+'</h6><p class="testDesc"></p></div>';
+        titleTest.onclick = edit;
 
     //  var addtestLi = $doc.createElement("li");
     var copytest = $doc.createElement("a");
@@ -846,7 +881,7 @@ console.info('saved');
 
 
   var showStats = function(e) {
-    console.log("showStats==" + e.getName());
+  //  console.log("showStats==" + e.getName());
     var stats = e.getData().stats;
     var testId = e.getData().testId;
     var status = e.getData().testStatus;
