@@ -144,6 +144,13 @@ border-radius: 10px;
   height: 80px;
 
 }
+.consoleViewContainer{
+
+}
+.consoleView{
+  height: 251px;
+overflow-y: auto;
+}
 
 .fileUpload {
     position: relative;
@@ -201,14 +208,13 @@ a.itooltip div {
     z-index:10;display:none; padding:14px 20px;
     margin-top:-30px; margin-left:28px;
     width:300px; line-height:16px;
-    -webkit-transition: display 3s; /* Safari */
+    -webkit-transition: display 5s; /* Safari */
     -webkit-transition-delay: 5s; /* Safari */
-    transition: display 3s;
+    transition: display 5s;
     transition-delay: 5s;
 }
 a.itooltip:hover div{
-    display:inline; position:absolute; color:#111;
-    border:1px solid #DCA; background:#fffAF0;}
+    display:inline; position:absolute; }
 .callout {z-index:20;position:absolute;top:30px;border:0;left:-12px;}
 
 /*CSS3 extras*/
@@ -216,4 +222,15 @@ a.itooltip div
 {
     border-radius:4px;
     box-shadow: 5px 5px 8px #CCC;
+}
+a.itooltip div h6{
+  text-overflow: ellipsis;
+  text-align: justify;
+  overflow-x: hidden;
+}
+
+a.itooltip .testDesc{
+  text-overflow: ellipsis;
+  text-align: justify;
+  overflow-x: hidden;  
 }

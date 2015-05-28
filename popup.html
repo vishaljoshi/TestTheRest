@@ -1,0 +1,63 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Test the Rest Extension's Popup</title>
+    <script data-semver="2.1.1" src="ext-lib/jquery.min.js"></script>
+    <script  data-semver="3.1.1" src="ext-lib/bootstrap.min.js"></script>
+    <link  data-semver="3.2.0" rel="stylesheet" href="style/bootstrap.min.css" />
+
+    <style>
+    html{
+      width:200px;
+    }
+    .panel{
+      margin-bottom: 0px;
+    }
+
+    a.list-group-item:hover, a.list-group-item:focus {
+  color: #555;
+  text-decoration: none;
+  background-color: rgb(77, 144, 254);
+}
+
+.startRecording{
+  border:1px solid red;
+}
+
+          </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+     -->
+    <script src="popup.js"></script>
+    <script src="background.js"></script>
+
+
+  </head>
+  <body>
+  <div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Option</h3>
+  </div>
+  <div class="panel-body">
+    <div class="list-group">
+  <a  id="startRecord"  class="list-group-item ">Record</a>
+  <a href="#" id="save"  class="list-group-item ">Save</a>
+  <a href="#" id="loadTestTheRest" class="list-group-item">Test The Rest</a>
+  <a href="#" class="list-group-item">getting started</a>
+  <a href="#" class="list-group-item">about</a>
+  <a href="#" class="list-group-item">help & feedback</a>
+</div>
+  </div>
+</div>
+
+  </body>
+</html>

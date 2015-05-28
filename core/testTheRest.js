@@ -86,7 +86,7 @@ var testCaseObj=null;
             }
           }
           test.testStatus = testStatus;
-          test.req_body = response;
+          //test.req_body = response;
           test.res_headers=headers;
           if (test.testStatus == _TEST_STATUS_FAIL) {
             $self.stats.testcase.fail++
@@ -240,7 +240,8 @@ var testCaseObj=null;
           ajax.open('GET', url + '?' + paramToString(param), true);
           ajax.onreadystatechange = function() {
             if (ajax.readyState == 4 && ajax.status != 0) {
-
+              console.info('HTTP response status:'+ajax.status);
+              console.info('HTTP response response:'+ajax.responseText);
               callBackParam.endTime =(new Date()).getTime();
               callBackFunc(ajax.status, buildHeaders(ajax.getAllResponseHeaders()), ajax.responseText, callBackParam);
             }
