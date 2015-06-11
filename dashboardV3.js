@@ -35,13 +35,13 @@ function loadHandler() {
 
   }
   chrome.runtime.getBackgroundPage(function(bgPage) {
-    console.log("bgPage.recorderSettings.isStarted"+bgPage.recorderSettings.isStarted);
+    console.log("bgPage.recorderSettings.isStarted" + bgPage.recorderSettings.isStarted);
     bgPage.requestDetails;
-    var config =bgPage.importer();
+    var config = bgPage.importer();
     console.log();
-    if(config){
+    if (config) {
       initDash(config);
-    }else{
+    } else {
       initDash(defaultStruct);
     }
 
@@ -51,10 +51,10 @@ function loadHandler() {
 
 
 
-  $(document).ready(function () {
-  $('[data-toggle="offcanvas"]').click(function () {
-    $('.row-offcanvas').toggleClass('active')
-  });
+  $(document).ready(function() {
+    $('[data-toggle="offcanvas"]').click(function() {
+      $('.row-offcanvas').toggleClass('active')
+    });
   });
 
 
@@ -70,14 +70,14 @@ function consolechange() {
   if (typeof window !== 'undefined' && typeof location !== 'undefined') {
     isbrowser = true
     consoleView = document.getElementById("consoleView");
-  var  consoleViewBottom = document.getElementById("consoleViewBottom");
+    var consoleViewBottom = document.getElementById("consoleViewBottom");
     if (consoleView) {
       _console.info = function(msg) {
         var info = document.createElement("span");
         info.className = "console info";
         info.innerText = msg;
         consoleView.appendChild(info);
-      //  consoleView.scrollTop=consoleView.scrollHeight;
+        //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
       _console.log = function(msg) {
@@ -86,7 +86,7 @@ function consolechange() {
         log.className = "console log";
         log.innerText = msg;
         consoleView.appendChild(log);
-      //  consoleView.scrollTop=consoleView.scrollHeight;
+        //  consoleView.scrollTop=consoleView.scrollHeight;
       }
       _console.error = function(msg) {
 
@@ -94,7 +94,7 @@ function consolechange() {
         error.className = "console error";
         error.innerText = msg;
         consoleView.appendChild(error);
-      //  consoleView.scrollTop=consoleView.scrollHeight;
+        //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
       _console.warn = function(msg) {
@@ -103,7 +103,7 @@ function consolechange() {
         warning.className = "console warning";
         warning.innerText = msg;
         consoleView.appendChild(warning);
-      //  consoleView.scrollTop=consoleView.scrollHeight;
+        //  consoleView.scrollTop=consoleView.scrollHeight;
       }
 
     } else {
@@ -128,13 +128,13 @@ var dashboard = function($doc, config) {
     event = event || window.event;
     //event.target.data
     //  document.getElementById("statsView").style.display = "none";
-    document.getElementById("progress").style.display="block";
+    document.getElementById("progress").style.display = "block";
     document.getElementById("consoleView").innerHTML = null;
     //  console.log(event.target.parentElement.getAttribute('data'));
     var id = event.target.parentElement.parentElement.id;
-    $('#'+id).find('.testName').removeClass('testFail');
-    $('#'+id).find('.testName').removeClass('testPass');
-    var stats = main.runner(config, event.target.parentElement.parentElement.getAttribute('data'),testCompleted);
+    $('#' + id).find('.testName').removeClass('testFail');
+    $('#' + id).find('.testName').removeClass('testPass');
+    var stats = main.runner(config, event.target.parentElement.parentElement.getAttribute('data'), testCompleted);
     //  console.log("assert3==" + stats.asserts.total);
 
     event.stopPropagation();
@@ -142,9 +142,9 @@ var dashboard = function($doc, config) {
   }
 
   var testCompleted = function(status) {
-  //  var _statsEvent = new evntObj(EVENT_STATS,status);
-  //  eventBus.notify(_statsEvent)
-    document.getElementById("progress").style.display="none";
+    //  var _statsEvent = new evntObj(EVENT_STATS,status);
+    //  eventBus.notify(_statsEvent)
+    document.getElementById("progress").style.display = "none";
 
   }
 
@@ -208,15 +208,16 @@ var dashboard = function($doc, config) {
     if (!ev.req_headers) {
       ev.req_headers = [];
     }
-    key = 'header-'+ev.req_headers.length;
+    var index =ev.req_headers.length;
+    key = 'header-' + index;
     var header = {};
     header[key] = value;
     ev.req_headers.push(header);
 
     //var header ='<div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+keys[i]+'" class="deleteHeaderElement" >-</a>key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+keys[i]+'" value="'+keys[i]+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+ev.req_headers[keys[i]]+'" value="'+ev.req_headers[keys[i]]+'"></div>';
     var header = '<div class="row"><div class="col-xs-6"><a  data="' + elementId + '-formTestHeader-' + key + '" class="deleteHeaderElement" >-</a>' +
-      'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-key" value="' + key + '"></div>' +
-      '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-value" value="' + value + '"></div></div>';
+      'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-key-'+index+'" value="' + key + '"></div>' +
+      '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-value-'+index+'" value="' + value + '"></div></div>';
 
 
 
@@ -263,15 +264,16 @@ var dashboard = function($doc, config) {
     if (!ev.req_params) {
       ev.req_params = [];
     }
-    key = 'param-'+ev.req_params.length;
+    var index =ev.req_params.length;
+    key = 'param-' + index;
     var param = {};
     param[key] = value;
     ev.req_params.push(param);
 
     //var header ='<div class="col-xs-6"><a href="#" data="'+elementId+'-formTestHeader-'+keys[i]+'" class="deleteHeaderElement" >-</a>key : <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+keys[i]+'" value="'+keys[i]+'"></div> <div class="col-xs-6">value: <input class="formTestinput" type="text" id="'+elementId+'-formTestHeader-'+ev.req_headers[keys[i]]+'" value="'+ev.req_headers[keys[i]]+'"></div>';
     var paramWrap = '<div class="row"><div class="col-xs-6"><a  data="' + elementId + '-formTestParam-' + key + '" class="deleteParamElement" >-</a>' +
-      'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-key" value="' + key + '"></div>' +
-      '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-value" value="' + value + '"></div></div>';
+      'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-key-'+index+'" value="' + key + '"></div>' +
+      '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-value-'+index+'" value="' + value + '"></div></div>';
 
 
 
@@ -319,23 +321,24 @@ var dashboard = function($doc, config) {
     if (!ev.res_assertions) {
       ev.res_assertions = [];
     }
-    key = ev.res_assertions.length;
+    var index  = ev.res_assertions.length;
+    key = index;
     var assert = {};
-  ///  param[key] = value;
+    ///  param[key] = value;
     var assert = {
-      "assertName": 'asert-'+key,
+      "assertName": 'asert-' + key,
       "assertType": "header",
       "expression": value
     }
     ev.res_assertions.push(assert);
 
 
-    var selection=  '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" selected >header</option><option id="response" value="response">response</option></select>'
-    var assertWrap = '<div class="row"><div class="col-xs-4">'+
+    var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" selected >header</option><option id="response" value="response">response</option></select>'
+    var assertWrap = '<div class="row"><div class="col-xs-4">' +
       '<a  data="' + elementId + '-formTestAssert-' + assert.assertName + '" class="deleteAssertElement" >-</a>' +
-        'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-key" value="' +  assert.assertName + '"></div>' +
-        '<div class="col-xs-4">type:'+selection+' </div>'+
-        '<div class="col-xs-4">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-value" value="' + assert.expression + '"></div></div>';
+      'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-key-'+index+'" value="' + assert.assertName + '"></div>' +
+      '<div class="col-xs-4">type:' + selection + ' </div>' +
+      '<div class="col-xs-4">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-value-'+index+'" value="' + assert.expression + '"></div></div>';
 
 
 
@@ -370,17 +373,18 @@ var dashboard = function($doc, config) {
 
 
         ev.testName = document.getElementById(identifier + '-formTestName').value;
-        event.target.innerHTML =   ev.testName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.testName+'</h6><p class="testDesc"></p></div>';
+        event.target.innerHTML = ev.testName + '<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />' + ev.testName + '</h6><p class="testDesc"></p></div>';
         ev.url = document.getElementById(identifier + '-formTestUrl').value;
         ev.method = document.getElementById(identifier + '-formTestMethod').value;
         ev.timeout = document.getElementById(identifier + '-formTestTimeout').value;
+        ev.req_params_raw = document.getElementById(identifier + '-formTestParam-raw').value;
         if (ev.req_headers) {
           delete ev.req_headers;
           ev.req_headers = [];
           $('#headers' + elementId).children('.row').not('.deleteTestHeader').each(function(index, row) {
 
-            var key = $(row).find('#' + elementId + '-formTestHeader-key').val();
-            var value = $(row).find('#' + elementId + '-formTestHeader-value').val();
+            var key = $(row).find('#' + elementId + '-formTestHeader-key-' + index).val();
+            var value = $(row).find('#' + elementId + '-formTestHeader-value-' + index).val();
             var header = {};
             header[key] = value;
             ev.req_headers.push(header);
@@ -396,8 +400,8 @@ var dashboard = function($doc, config) {
           ev.req_params = [];
           $('#params' + elementId).children('.row').not('.deleteTestHeader').each(function(index, row) {
 
-            var key = $(row).find('#' + elementId + '-formTestParam-key').val();
-            var value = $(row).find('#' + elementId + '-formTestParam-value').val();
+            var key = $(row).find('#' + elementId + '-formTestParam-key-' + index).val();
+            var value = $(row).find('#' + elementId + '-formTestParam-value-' + index).val();
             var param = {};
             param[key] = value;
             ev.req_params.push(param);
@@ -414,8 +418,8 @@ var dashboard = function($doc, config) {
           ev.res_assertions = [];
           $('#assert' + elementId).children('.row').not('.deleteTestHeader').each(function(index, row) {
 
-            var key = $(row).find('#' + elementId + '-formTestAssertion-key').val();
-            var value = $(row).find('#' + elementId + '-formTestAssertion-value').val();
+            var key = $(row).find('#' + elementId + '-formTestAssertion-key-' + index).val();
+            var value = $(row).find('#' + elementId + '-formTestAssertion-value-' + index).val();
             var type = $(row).find('#' + elementId + '-formTestAssertion-type').val();
             var assert = {
               "assertName": key,
@@ -435,27 +439,25 @@ var dashboard = function($doc, config) {
 
       } else if (ev.testSuitName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formTestSuitName" value="'+ev.testSuitName+'"></div></div>'+'</div></div>';
-        ev.testSuitName = document.getElementById(identifier + '-formTestSuitName').value;
+        ev.testSuitName = document.getElementById(identifier + '-formTestName').value;
 
-        event.target.innerHTML =   ev.testSuitName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.testSuitName+'</h6><p class="testDesc"></p></div>';
+        event.target.innerHTML = ev.testSuitName + '<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />' + ev.testSuitName + '</h6><p class="testDesc"></p></div>';
       } else if (ev.projectName) {
         //testForm.innerHTML=inHtml+'<div class="container"><div class="row"><input type="text" id="formProjectName" value="'+ev.projectName+'"></div></div>';
-        ev.projectName = document.getElementById(identifier + '-formTestProjectName').value;
+        ev.projectName = document.getElementById(identifier + '-formTestName').value;
 
-        event.target.innerHTML =   ev.projectName+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+  ev.projectName+'</h6><p class="testDesc"></p></div>';
+        event.target.innerHTML = ev.projectName + '<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />' + ev.projectName + '</h6><p class="testDesc"></p></div>';
       }
       //registerAction();
       //  testForm.style.display='block';
-    //  load(config);
+      //  load(config);
     }
     e.stopPropagation();
-console.info('saved');
+    console.info('saved');
   }
 
 
   var edit = function(event) {
-    $(".addHeaderElement").unbind("click");
-    $(".deleteHeaderElement").unbind("click");
     var e = event || window.event;
     var elementId = e.target.parentElement.parentElement.getAttribute('id');
     var testForm = document.getElementById("testform" + elementId);
@@ -466,145 +468,162 @@ console.info('saved');
       var parentNode = e.target.parentElement.parentElement.parentElement;
 
 
-      testForm.innerHTML = null;
-      var inHtml = '<div class="panel panel-primary" > <div class="panel-heading"><h3 class="panel-title">Edit <a class="save">save</a></h3></div><div class="panel-body">';
       if (parent && ev) {
         if (ev.testName) {
+          document.getElementById(elementId + '-formTestName').value = ev.testName;
+          document.getElementById(elementId + '-formTestUrl').value = ev.url;
+          //need some work here
+          if (ev.method == 'GET') {
+            document.getElementById(elementId + '-formTestMethodGET').selected = true;
+          } else if (ev.method == 'POST') {
+            document.getElementById(elementId + '-formTestMethodPOST').selected = true;
+          }
 
-          //inHtml+='<div class="row"> <div class="col-xs-6"><span class="title">name</span></div> <div class="col-xs-6"><span class="title">Url</span></div> </div> <div class="row"> <div class="col-xs-6"><input type="text" id="'+elementId+'-formTestName" value="'+ev.testName+'"></div> <div class="col-xs-6"><input type="text" id="'+elementId+'-formTestUrl" value="'+ev.url+'"></div> </div> <div class="row"> <div class="col-xs-6"><span class="title">method</span></div> <div class="col-xs-6"><span>time Out</span></div> </div> <div class="row"> <div class="col-xs-6"><input type="text" id="'+elementId+'-formTestMethod" value="'+ev.method+'"></div> <div class="col-xs-6"><input type="text" id="'+elementId+'-formTestTimeout" value="'+ev.timeout+'"></div> </div> ';
-          inHtml += '<div class="row"> <div class="col-xs-12"><div class="formTesttitle">Test Case Name</div></div></div>' +
-            '<div class="row"> <div class="col-xs-12"><input class="formTestinput" type="text" id="' + elementId + '-formTestName" value="' + ev.testName + '"></div></div>' +
-            '<div class="row"><div class="col-xs-12"><div class="formTesttitle">Url</div></div></div>' +
-            '<div class="row"><div class="col-xs-12"><input class="formTestinput" type="text" id="' + elementId + '-formTestUrl" value="' + ev.url + '"></div> </div>' +
-            '<div class="row"> <div class="col-xs-6"><div class="formTesttitle">method</div></div> <div class="col-xs-6"><div class="formTesttitle">time Out</div></div> </div> <div class="row"> <div class="col-xs-6"><input class="formTestinput" type="text" id="' + elementId + '-formTestMethod" value="' + ev.method + '"></div> <div class="col-xs-6"><input class="formTestinput" type="text" id="' + elementId + '-formTestTimeout" value="' + ev.timeout + '"></div> </div> ';
+
+          document.getElementById(elementId + '-formTestTimeout').value = ev.timeout;
+
+
+
 
           // start header
-          inHtml += '<div class="row"><div class="col-xs-12"><h3>header<a  data="' + elementId + '" class="addHeaderElement" >+</a></h3></div></div><div class="row" ><div class="col-xs-12" id="headers' + elementId + '">';
           if (ev.req_headers) {
-
-
+            var headersholder = document.getElementById('headers' + elementId);
+            headersholder.innerHTML = '';
             for (var i = 0; i < ev.req_headers.length; i++) {
               var key = Object.keys(ev.req_headers[i]);
-              inHtml += '<div class="row"><div class="col-xs-6"><a  data="' + elementId + '-formTestHeader-' + key + '" class="deleteHeaderElement" >-</a>' +
-                'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-key" value="' + key + '"></div>' +
-                '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestHeader-value" value="' + ev.req_headers[i][key] + '"></div></div>';
+              var rowdeleteTestHeader = document.createElement('div');
+              rowdeleteTestHeader.className = 'row ';
+              rowdeleteTestHeader.innerHTML = '<div class="col-xs-6"><a data="' + elementId + '-formTestHeader-' + key + '" class="deleteHeaderElement">-</a>key :' +
+                '<input class="formTestinput key" type="text" id="' + elementId + '-formTestHeader-key-' + i + '" value="">  </div>  <div class="col-xs-6">value:' +
+                '<input class="formTestinput val" type="text" id="' + elementId + '-formTestHeader-value-' + i + '" value="">  </div>';
+              headersholder.appendChild(rowdeleteTestHeader);
+
+              //document.getElementById(elementId+'-formTestHeader').value=key;
+              document.getElementById(elementId + '-formTestHeader-key-' + i).value = key;
+              document.getElementById(elementId + '-formTestHeader-value-' + i).value = ev.req_headers[i][key];
+
+
             }
 
 
           }
-          inHtml += '</div></div>';
-          // END header
-          // START param
-          inHtml += '<div class="row"><div class="col-xs-12"><h3>Param<a data="' + elementId + '" class="addParamElement" >+</a></h3></div></div><div class="row" ><div class="col-xs-12" id="params' + elementId + '">';
           if (ev.req_params) {
-            /// inHtml+= '<div class="row"><div class="col-xs-12"><h3>Param</h3><a href="#" data="'+elementId+'" class="addParamElement" >+</a></div></div>';
-
+            var paramsholder = document.getElementById('params' + elementId);
+            paramsholder.innerHTML = '';
             for (var i = 0; i < ev.req_params.length; i++) {
               var key = Object.keys(ev.req_params[i]);
-              inHtml += '<div class="row"><div class="col-xs-6"><a  data="' + elementId + '-formTestParam-' + key + '" class="deleteParamElement" >-</a>' +
-                'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-key" value="' + key + '"></div>' +
-                '<div class="col-xs-6">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestParam-value" value="' + ev.req_params[i][key] + '"></div></div>';
+
+              var rowdeleteTestParam = document.createElement('div');
+              rowdeleteTestParam.className = 'row ';
+              rowdeleteTestParam.innerHTML = '<div class="col-xs-6"><a data="' + elementId + '-formTestParam-' + key + '" class="deleteParamElement">-</a>key :' +
+                '<input class="formTestinput" type="text" id="' + elementId + '-formTestParam-key-' + i + '" value="">  </div>  <div class="col-xs-6">value: ' +
+                '<input class="formTestinput" type="text" id="' + elementId + '-formTestParam-value-' + i + '" value="">  </div>';
+              paramsholder.appendChild(rowdeleteTestParam);
+
+              //document.getElementById(elementId+'-formTestHeader').value=key;
+              document.getElementById(elementId + '-formTestParam-key-' + i).value = key;
+              document.getElementById(elementId + '-formTestParam-value-' + i).value = ev.req_params[i][key]
+
+
             }
 
           }
-          inHtml += '</div></div>';
+
+          document.getElementById(elementId + '-formTestParam-raw').value = (ev.req_params_raw !== undefined ? ev.req_params_raw : "");
           // END PARAM
 
 
           // START ASSERTS
-          inHtml += '<div class="row"><div class="col-xs-12"><h3>Asserts<a data="' + elementId + '" class="addAssertElement" >+</a></h3></div></div><div class="row" ><div class="col-xs-12" id="assert' + elementId + '">';
           if (ev.res_assertions) {
-            /// inHtml+= '<div class="row"><div class="col-xs-12"><h3>Param</h3><a href="#" data="'+elementId+'" class="addParamElement" >+</a></div></div>';
 
+            var assertsholder = document.getElementById('assert' + elementId);
+            assertsholder.innerHTML = '';
             for (var i = 0; i < ev.res_assertions.length; i++) {
               var assert = ev.res_assertions[i];
               //var key = Object.keys(assert);
 
-            var selection=  '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" '+(assert.assertType == "header"?"selected":"")+'>header</option><option id="response" value="response"'+( assert.assertType == "response"?"selected":"") +'>response</option></select>'
-              inHtml += '<div class="row"><div class="col-xs-4">'+
-              '<a  data="' + elementId + '-formTestAssert-' + assert.assertName + '" class="deleteAssertElement" >-</a>' +
-                'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-key" value="' +  assert.assertName + '"></div>' +
-                '<div class="col-xs-4">type:'+selection+' </div>'+
-                '<div class="col-xs-4">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-value" value="' + assert.expression + '"></div></div>';
+              //  document.getElementById(elementId+'-formTestAssertion-type').value=key;
+              var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" ' + (assert.assertType == "header" ? "selected" : "") + '>header</option><option id="response" value="response"' + (assert.assertType == "response" ? "selected" : "") + '>response</option></select>'
+
+
+              var rowdeleteTestAsset = document.createElement('div');
+              rowdeleteTestAsset.className = 'row';
+              rowdeleteTestAsset.innerHTML = '<div class="col-xs-4">' +
+                '<a  data="' + elementId + '-formTestAssert-' + assert.assertName + '" class="deleteAssertElement" >-</a>' +
+                'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-key-' + i + '" value="' + assert.assertName + '"></div>' +
+                '<div class="col-xs-4">type:' + selection + ' </div>' +
+                '<div class="col-xs-4">value: <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-value-' + i + '" value="' + assert.expression + '"></div>';
+              assertsholder.appendChild(rowdeleteTestAsset);
+
+              //document.getElementById(elementId+'-formTestHeader').value=key;
+              document.getElementById(elementId + '-formTestAssertion-key-' + i).value = assert.assertName;
+              document.getElementById(elementId + '-formTestAssertion-value-' + i).value = assert.expression;
+
+
+
             }
 
           }
-          inHtml += '</div></div>';
-          // END ASSERTS
 
 
-        /*  if (ev.res_assertions) {
-            inHtml += '<div class="row"><div class="col-xs-12"><h3>Asserts</h3></div></div><div class="row">';
-            //  var keys = Object.keys(ev.req_params);
-
-            for (var i = 0; i < ev.res_assertions.length; i++) {
-              var assert = ev.res_assertions[i];
-              inHtml += '<div class="col-xs-6">assertName : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-' + assert.assertName + '" value="' + assert.assertName + '"></div>';
-              var type = assert.assertType == "response" ? 'response' : 'header';
-              inHtml += '<div class="col-xs-6">value for ' + type + ': <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-' + assert.expression + '" value="' + assert.expression + '"></div>';
-
-            }
-            inHtml += '</div>';
-
-          }*/
-
-
-          inHtml += '</div>';
-          //  inHtml+= '<div class="row"><div class="col-xs-12"><a class="title" id="saveTest" onclick="save()">save</a></div></div>';//save
-          inHtml += '</div></div>'; //Panel
-
-
-
-          testForm.innerHTML = inHtml;
+          //  testForm.innerHTML = inHtml;
 
 
         } else if (ev.testSuitName) {
+          document.getElementById(elementId + '-formTestName').value = ev.testSuitName;
 
-          inHtml += '<div class="row"><div class="col-xs-12"><input class="formTestinput" type="text" id="' + elementId + '-formTestSuitName" value="' + ev.testSuitName + '"></div></div>'
-            //  inHtml+= '<div class="row"><div class="col-xs-12"><a class="title" id="saveTest" onclick="save()">save</a></div></div>';//save
-          inHtml += '</div></div>'; //Panel
 
-          testForm.innerHTML = inHtml;
         } else if (ev.projectName) {
-          inHtml += '<div class="row"><div class="col-xs-12"><input class="formTestinput" type="text" id="' + elementId + '-formTestProjectName" value="' + ev.projectName + '"></div></div>'
-          inHtml += '</div></div>'; //panel
-          testForm.innerHTML = inHtml;
-
-
+          document.getElementById(elementId + '-formTestName').value = ev.projectName;
 
         }
         //registerAction();
-        $('.addHeaderElement').click(function(e) {
+        $(testForm).find('.addHeaderElement').click(function(e) {
           addHeader(e);
         });
-        $('.deleteHeaderElement').click(function(e) {
+        $(testForm).find('.deleteHeaderElement').click(function(e) {
           deleteHeader(e);
         });
 
 
-        $('.addParamElement').click(function(e) {
+        $(testForm).find('.addParamElement').click(function(e) {
           addParam(e);
         });
-        $('.deleteParamElement').click(function(e) {
+        $(testForm).find('.deleteParamElement').click(function(e) {
           deleteParam(e);
         });
 
 
-        $('.addAssertElement').click(function(e) {
+        $(testForm).find('.addAssertElement').click(function(e) {
           addAssert(e);
         });
-        $('.deleteAssertElement').click(function(e) {
+        $(testForm).find('.deleteAssertElement').click(function(e) {
           deleteAssert(e);
         });
         //registerAction();
-        $('.save').click(function(e) {
+        $(testForm).find('.save').click(function(e) {
           save(event);
         });
 
         testForm.style.display = 'block';
+        //$(doument).ready();
+        //$('#mytab').tab('show')
+      //  $('#red').tab('show');
+        //$('#orange').tab('show');
+      //  $('#tab-param a[href="#red"]').tab('show') ;
+
       }
 
     } else {
+
+
+      $(testForm).find(".addHeaderElement").unbind("click");
+      $(testForm).find(".deleteHeaderElement").unbind("click");
+      $(testForm).find(".addParamElement").unbind("click");
+      $(testForm).find(".deleteParamElement").unbind("click");
+      $(testForm).find(".addAssertElement").unbind("click");
+      $(testForm).find(".deleteAssertElement").unbind("click");
+      $(testForm).find(".save").unbind("click");
       testForm.style.display = 'none';
       save(event);
     }
@@ -775,14 +794,27 @@ console.info('saved');
           }
           projectNav.appendChild(_LIpro);
         }
-      }// if projects
-    }// if config
+      } // if projects
+    } // if config
 
     treenode();
 
+  /*$('#tab-param a').click(function (e) {
+  e.preventDefault()
+  alert();
+  //$(this).tab('show');
+  //$('#orange').tab('show');
+  $('#tab-param a[href="'+$(this).attr('href')+'"]').tab('show') ;
+  //$($(this).attr('href')).removeClass('active');
+  //.addClass('active')
+  //.removeClass('active')
+
+})*/
+
+
   }
 
-   var treenode =function () {
+  var treenode = function() {
     $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
     $('.tree li.parent_li > span').on('click', function(e) {
       var children = $(this).parent('li.parent_li').find(' > ul > li');
@@ -803,8 +835,8 @@ console.info('saved');
     testcontroller.className = "testcontroller";
     var titleTest = $doc.createElement("a");
     titleTest.className = "itooltip testName";
-    titleTest.innerHTML = name+'<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />'+name+'</h6><p class="testDesc"></p></div>';
-        titleTest.onclick = edit;
+    titleTest.innerHTML = name + '<div class="panel panel-primary"> <h6><img class="callout" src="callout.gif" />' + name + '</h6><p class="testDesc"></p></div>';
+    titleTest.onclick = edit;
 
     //  var addtestLi = $doc.createElement("li");
     var copytest = $doc.createElement("a");
@@ -846,14 +878,6 @@ console.info('saved');
     //testcontroller.appendChild(copytest);
     testcontroller.appendChild(deletetest);
     testcontroller.appendChild(playtest);
-
-
-
-
-
-
-
-
     var _tmp = '<span><i class="icon-leaf">' + type + '</i></span>';
     if ('project' === type) {
       //  var exporttestLi = $doc.createElement("li");
@@ -869,8 +893,12 @@ console.info('saved');
     testForm.className = "testform";
     testForm.style.display = 'none'
     testForm.id = 'testform' + id;
+    if ('test' === type) {
+      testForm.innerHTML = '<div class="panel panel-primary">  <div class="panel-heading">  <h3 class="panel-title">Edit <a class="save">save</a></h3>  </div>  <div class="panel-body">  <div class="row">  <div class="col-xs-12">  <div class="formTesttitle">Test Case Name</div>  </div>  </div>  <div class="row">  <div class="col-xs-12">  <input class="formTestinput" type="text" id="' + id + '-formTestName" value=""> </div>  </div>  <div class="row">  <div class="col-xs-12">  <div class="formTesttitle">Url</div>  </div>  </div>  <div class="row">  <div class="col-xs-12">  <input class="formTestinput" type="text" id="' + id + '-formTestUrl" value=""> </div>  </div>  <div class="row">  <div class="col-xs-6">  <div class="formTesttitle">method</div>  </div>  <div class="col-xs-6">  <div class="formTesttitle">time Out</div>  </div>  </div>  <div class="row">  <div class="col-xs-6">  <select class="formTestinput" id="' + id + '-formTestMethod">  <option id="' + id + '-formTestMethodGET" value="GET">GET</option>  <option id="' + id + '-formTestMethodPOST" value="POST">POST</option>  </select>  </div>  <div class="col-xs-6">  <input class="formTestinput" type="text" id="' + id + '-formTestTimeout" value=""> </div>  </div>  <div class="row">  <div class="col-xs-12">  <h3>header<a data="' + id + '" class="addHeaderElement">+</a></h3>  </div>  </div>  <div class="row">  <div class="col-xs-12" id="headers' + id + '"></div>  </div>  <div role="tabpanel"> <!-- Nav tabs --> <ul class="nav nav-tabs" role="tablist" id="mytab"> <li role="presentation" class="active"><a href="#paramTab'+id+'" aria-controls="home'+id+'" role="tab" data-toggle="tab">params</a></li> <li role="presentation"><a href="#rawParamTab'+id+'" aria-controls="rawParamTab'+id+'" role="tab" data-toggle="tab">Raw</a></li> </ul> <!-- Tab panes --> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="paramTab'+id+'">  <div class="row">  <div class="col-xs-12">  <h3>Params<a data="' + id + '" class="addParamElement">+</a></h3>  </div>  </div>  <div class="row">  <div class="col-xs-12" id="params' + id + '"> </div>  </div> </div> <div role="tabpanel" class="tab-pane" id="rawParamTab'+id+'">  <div class="row">  <div class="col-xs-12">  <h3>Raw</h3>  <textarea class="rawParam" id="' + id + '-formTestParam-raw"></textarea>  </div>  </div> </div> </div> </div>  <div class="row">  <div class="col-xs-12">  <h3>Asserts<a data="' + id + '" class="addAssertElement">+</a></h3>  </div>  </div>  <div class="row">  <div class="col-xs-12" id="assert' + id + '"> </div>  </div>  </div> </div>';
+    }else{
+      testForm.innerHTML = ' <div class="panel panel-primary">  <div class="panel-heading">  <h3 class="panel-title">Edit</h3>  </div>  <div class="panel-body">  <div class="row">  <div class="col-xs-12">  <input class="formTestinput" type="text" id="' + id + '-formTestName" value="">  </div>  </div>  </div> </div>';
+    }
 
-    testForm.innerText = '';
 
     testcontroller.appendChild(testForm);
     //'+'<div class="testcontroller"><a href="#" id="addTest" class="glyphicon glyphicon-plus">+</a><a href="#" id="deleteTest"  class="glyphicon glyphicon-minus">-</a><a href="#" id="playTest"  class="glyphicon glyphicon-play">>></a></div>'
@@ -881,11 +909,11 @@ console.info('saved');
 
 
   var showStats = function(e) {
-  //  console.log("showStats==" + e.getName());
+    //  console.log("showStats==" + e.getName());
     var stats = e.getData().stats;
     var testId = e.getData().testId;
     var status = e.getData().testStatus;
-    var errorMessage =  e.getData().errorMessage;
+    var errorMessage = e.getData().errorMessage;
     $doc.getElementById("stats.pro.total").innerHTML = stats.project.total;
     $doc.getElementById("stats.pro.fail").innerHTML = stats.project.fail;
     $doc.getElementById("stats.testSuit.total").innerHTML = stats.testSuit.total;
@@ -898,21 +926,21 @@ console.info('saved');
 
     // update the test case labels:
 
-    if(testId && status ){
-      $('#'+testId).find('.testName').removeClass('testFail');
-      $('#'+testId).find('.testName').removeClass('testPass');
-      $('#'+testId).find('.testName').removeClass('testInprogress');
-      if(status==_TEST_STATUS_INPROGRESS){
-        $('#'+testId).find('.testName').addClass('testInprogress');
-        $('#'+testId).find('.testDesc').text("test in progress ...");
+    if (testId && status) {
+      $('#' + testId).find('.testName').removeClass('testFail');
+      $('#' + testId).find('.testName').removeClass('testPass');
+      $('#' + testId).find('.testName').removeClass('testInprogress');
+      if (status == _TEST_STATUS_INPROGRESS) {
+        $('#' + testId).find('.testName').addClass('testInprogress');
+        $('#' + testId).find('.testDesc').text("test in progress ...");
 
 
-      }else if (status==_TEST_STATUS_PASS){
-        $('#'+testId).find('.testName').addClass('testPass');
-        $('#'+testId).find('.testDesc').text("test is a success :)");
-      }else{
-        $('#'+testId).find('.testName').addClass('testFail');
-        $('#'+testId).find('.testDesc').text("test is a failure :( , "+errorMessage);
+      } else if (status == _TEST_STATUS_PASS) {
+        $('#' + testId).find('.testName').addClass('testPass');
+        $('#' + testId).find('.testDesc').text("test is a success :)");
+      } else {
+        $('#' + testId).find('.testName').addClass('testFail');
+        $('#' + testId).find('.testDesc').text("test is a failure :( , " + errorMessage);
       }
 
 

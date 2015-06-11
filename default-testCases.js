@@ -8,7 +8,7 @@ var defaultStruct = {
         "tests": [{
           "testName": "Geo Ip service",
           "url": "http://www.telize.com/geoip",
-          "method": "get",
+          "method": "GET",
           "timeout": 5000,
           "req_headers": [],
           "req_params":[],
@@ -28,7 +28,7 @@ var defaultStruct = {
         },{
           "testName": "Bit Coin",
           "url": "http://coinabul.com/api.php",
-          "method": "get",
+          "method": "GET",
           "timeout": 5000,
           "req_headers": [],
           "req_params":[],
@@ -52,10 +52,10 @@ var defaultStruct = {
         },{
           "testName": "Acronym Lookup",
           "url": "http://www.nactem.ac.uk/software/acromine/dictionary.py",
-          "method": "get",
+          "method": "GET",
           "timeout": 5000,
           "req_headers": [],
-          "req_params":[{"SF":"BMI"} ],
+          "req_params":[{"sf":"BMI"} ],
           "res_assertions": [{
             "assertName": "Assert1",
             "assertType":"response",
@@ -72,7 +72,7 @@ var defaultStruct = {
         },{
               "testName": "random generator",
               "url": "http://qrng.anu.edu.au/API/jsonI.php",
-              "method": "get",
+              "method": "GET",
               "timeout": "5000",
               "req_headers": [],
               "req_params": [

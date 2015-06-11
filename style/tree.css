@@ -23,6 +23,8 @@
     position:absolute;
     right:auto
 }
+
+
 .tree li::before {
     border-left:1px solid #999;
     bottom:50px;
@@ -58,4 +60,13 @@
     background:#eee;
     border:1px solid #94a0b4;
     color:#000
+}
+
+
+
+/* hack  */ 
+
+.tree .nav.nav-tabs li::before,
+.tree .nav.nav-tabs li::after{
+  border: 0px;
 }

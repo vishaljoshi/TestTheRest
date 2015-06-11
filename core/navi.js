@@ -3,7 +3,7 @@
 /**
  * @author Vishal Joshi
  * @desc this is small utility for validating the json and parsing it
- * 
+ *
  */
 
 
@@ -11,20 +11,35 @@ var jsNavi = function() {
 
   var jsonValidate = function(jsonObj, exps) {
    var eq = null;
+   var op = null;
+
+   var evaluate =function(l,r,o){
+     switch(o){
+               case '=': return l==r;
+               case '!=': return l!=r;
+               case '>' : return l>r;
+               case '<': return l<r;
+             }
+
+   }
+
+
+
     if (exps) {
       //(^.+)(=)(.+$)
-       var matchMain = new RegExp("(^.+)(=)(.+$)").exec(exps);
+       var matchMain = new RegExp("(^.+?)(\!=|=|>|<)(.+$)").exec(exps);
        if ((matchMain !== null) && (matchMain.length == 4)) {
          exps=matchMain[1];
+         op=matchMain[2];
          eq=matchMain[3];
-       } 
-       
+       }
+
       var expArray = exps.split(".");
       while (expArray.length > 0 && jsonObj !== null) {
         var ex = expArray.shift();
         var match = new RegExp("(.+)\\[([0-9]*)\\]").exec(ex);
         if ((match !== null) && (match.length == 3)) {
-          
+
           if (jsonObj[match[1]] !== undefined) {
             jsonObj = jsonObj[match[1]][match[2]];
           } else {
@@ -38,13 +53,14 @@ var jsNavi = function() {
        if (eq!=null) {
             match = new RegExp("(^true$)|(^false$)|(^[0-9]*\.?[0-9]*$)").exec(eq);
            if ((match !== null) && (match.length == 4)) {
-              
-             jsonObj = jsonObj == JSON.parse(match[1]!== undefined?match[1]:(match[2]!== undefined?match[2]:match[3]));
+             jsonObj = evaluate(jsonObj,JSON.parse(match[1]!== undefined?match[1]:(match[2]!== undefined?match[2]:match[3])),op);
+
+
            }else{
-             jsonObj = jsonObj ==eq;
+             jsonObj = evaluate(jsonObj,eq,op);
            }
        }
-      
+
     }
     return jsonObj;
   }
@@ -58,7 +74,7 @@ var jsNavi = function() {
         }else{
           data=json
         }
-        
+
         var _out = jsonValidate(data, expression);
       } catch (er) {
         _out=null;

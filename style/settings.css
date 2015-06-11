@@ -1,0 +1,14 @@
+.bubble{
+  margin-left: 5px;
+  padding:5px;
+   font-size: 14px;
+}
+
+.removeurlexclusion{
+margin-left: 10px ;
+cursor: pointer;
+}
+
+.exclusion{
+  padding-top:15px;
+}

@@ -232,5 +232,10 @@ a.itooltip div h6{
 a.itooltip .testDesc{
   text-overflow: ellipsis;
   text-align: justify;
-  overflow-x: hidden;  
+  overflow-x: hidden;
+}
+
+.rawParam{
+  width: 100%;
+height: 150px;
 }

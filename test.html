@@ -1,0 +1,101 @@
+<div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">Edit <a class="save">save</a></h3>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="formTesttitle">Test Case Name</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <input class="formTestinput" type="text" id="' + id + '-formTestName" value=""> </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="formTesttitle">Url</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <input class="formTestinput" type="text" id="' + id + '-formTestUrl" value=""> </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="formTesttitle">method</div>
+      </div>
+      <div class="col-xs-6">
+        <div class="formTesttitle">time Out</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <select class="formTestinput" id="' + id + '-formTestMethod">
+          <option id="' + id + '-formTestMethodGET" value="GET">GET</option>
+          <option id="' + id + '-formTestMethodPOST" value="POST">POST</option>
+        </select>
+      </div>
+      <div class="col-xs-6">
+        <input class="formTestinput" type="text" id="' + id + '-formTestTimeout" value=""> </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h3>header<a data="' + id + '" class="addHeaderElement">+</a></h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12" id="headers' + id + '"></div>
+    </div>
+
+
+
+    <div role="tabpanel">
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist" id="mytab">
+<li role="presentation" class="active"><a href="#paramTab'+id+'" aria-controls="home'+id+'" role="tab" data-toggle="tab">params</a></li>
+<li role="presentation"><a href="#rawParamTab'+id+'" aria-controls="rawParamTab'+id+'" role="tab" data-toggle="tab">Raw</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane active" id="paramTab'+id+'">
+  <div class="row">
+  <div class="col-xs-12">
+  <h3>Params<a data="' + id + '" class="addParamElement">+</a></h3>
+  </div>
+  </div>
+  <div class="row">
+  <div class="col-xs-12" id="params' + id + '"> </div>
+  </div>
+
+</div>
+<div role="tabpanel" class="tab-pane" id="rawParamTab'+id+'">
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Raw</h3>
+      <textarea class="rawParam" id="' + id + '-formTestParam-raw"></textarea>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h3>Asserts<a data="' + id + '" class="addAssertElement">+</a></h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12" id="assert' + id + '"> </div>
+    </div>
+  </div>
+</div>

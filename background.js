@@ -1,7 +1,8 @@
 var requestDetails ={};
 var recorderSettings ={
   'isStarted':false,
-  'excludeTypes':['.css','.js','.html','fluid/i18n']
+  'excludeTypes':['.css','.js','.html','fluid/i18n'],
+  'callTypes':['main_frame', 'sub_frame','xmlhttprequest']
   };
 
 
@@ -108,7 +109,7 @@ var onErrorOccurredCallBack=function(details){
 };
 var onRecord = function(url){
   console.log("inside onrecord url="+url);
-  var filter = {urls: ['*://'+url+'*'],types:['main_frame', 'sub_frame','xmlhttprequest']}
+  var filter = {urls: ['*://'+url+'*'],types:recorderSettings.callTypes}
   requestDetails={};
   chrome.webRequest.onCompleted.addListener(onCompletedCallBack,filter);
 
@@ -149,7 +150,8 @@ var  importer = function(){
   var projectName="default project"
   var projects =[];
   var testSuits=[];
-  var tests = []
+  var tests = [];
+  var Decoder = new TextDecoder('utf-8');
   var keys = Object.keys(requestDetails);
   keys.sort();
 var url;
@@ -157,7 +159,7 @@ if(keys.length>0){
   for(var i=0;i<keys.length;i++){
     var k =keys[i];
     var test ={};
-    var matches = requestDetails[k].url.match(/^[^#]*?:\/\/.*?(\/.*)$/);
+    var matches = requestDetails[k].url.match(/^[^#]*?:\/\/.*?(\/[^?]+)(.*$)/);
     if(matches && matches[1]){
       test.testName= matches[1];
     }else{
@@ -169,15 +171,36 @@ if(keys.length>0){
     test.method=requestDetails[k].method;
     test.timeout= Math.ceil((requestDetails[k].completionTime -requestDetails[k].startTime)+(1000*5)) ;
     test.req_headers=[];
+    test.req_params=[];
+    test.req_params_raw=null;
+    test.res_assertions=[];
     var headers = requestDetails[k].requestHeaders;
     for(var j=0;j<headers.length;j++){
       var h = {};
       h[headers[j].name]=headers[j].value;
       test.req_headers.push(h);
     }
+    if(test.method==='POST'){
+      if(requestDetails[k].requestBody && requestDetails[k].requestBody.formData){
+        console.log(requestDetails[k].requestBody.formData);
+        var tempKeys = Object.keys(requestDetails[k].requestBody.formData);
+        for(var r=0;r<tempKeys.length;r++){
+          var t ={};
+          t[tempKeys[r]]=requestDetails[k].requestBody.formData[tempKeys[r]][0];
+          test.req_params.push(t);
+        }
 
-    test.req_params=[];
-    test.res_assertions=[];
+      }else if(requestDetails[k].requestBody && requestDetails[k].requestBody.raw){
+      var raw =   Decoder.decode(requestDetails[k].requestBody.raw[0].bytes);
+        console.log("raw="+raw);
+        test.req_params_raw=raw;
+
+      }
+    }
+
+
+
+
     tests.push(test);
   }
   var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);

@@ -59,7 +59,7 @@ var testCaseObj=null;
         if (typeof response == 'string' || response instanceof String){
           try{
             response = JSON.parse(response);
-          }catch(er){  console.error("test case failed, response incorrect :" + test.testName);}
+          }catch(er){  console.error("test case failed, response is not Json :" + test.testName);}
 
         }
         if (test && test.res_assertions) {
@@ -128,9 +128,16 @@ var testCaseObj=null;
         _test.startTime=null;
         _test.endTime=null;
         _test.testStatus=null;
-        _util.comm().get(_test.url, _test.req_headers,  _test.req_params, _test.timeout,validateTest, _test);
+          if(_test.method=='GET'){
+            _util.comm().get(_test.url, _test.req_headers,  _test.req_params, _test.timeout,validateTest, _test);
+          }else if(_test.method=='POST'){
+            _util.comm().post(_test.url, _test.req_headers,  _test.req_params, _test.timeout,validateTest, _test);
+          }
 
-      }
+        }
+
+
+
     };
 
     var executeTestAll = function(testQ,testList) {
@@ -140,7 +147,7 @@ var testCaseObj=null;
         }
       }
 
-    }
+    };
 
 
 
@@ -168,8 +175,8 @@ var testCaseObj=null;
 
         if (param) {
           if((typeof param == 'string' || param instanceof String) && (param=param.trim())!=='' ){
-            if(param.indexOf('{')==0 && param.indexOf('}')==(param.length-1)){
-               value= param.substring(1,param.length-1);
+            if(param.indexOf('=')==0){
+               value= param.substring(1,param.length);
               value = jsNavi.startValidation(testCaseObj, value);
               //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
             }/*else if(param.indexOf('=')==0){
@@ -196,6 +203,21 @@ var testCaseObj=null;
             ajax.setRequestHeader(key, headerValue);
             console.log('setting headers ' + key + '==' + headerValue)
           }
+        }
+
+      };
+      var getHeader = function(headers,keyValue) {
+        if (headers) {
+
+
+          for (var i = 0; i < headers.length; i++) {
+            var key = Object.keys(headers[i]);
+            if(key==keyValue){
+                var headerValue=evalParam(headers[i][key]);
+                return headerValue;
+            }
+          }
+          return null;
         }
 
       };
@@ -232,12 +254,27 @@ var testCaseObj=null;
         }
         return _ret;
       }
+      var paramToEncodeURIComponent = function(param) {
+        _ret = '';
+        if (param) {
+
+
+          for (var i = 0; i < param.length; i++) {
+            var key = Object.keys(param[i]);
+            if (i != 0) {
+              _ret += '&'
+            }
+            _ret += encodeURIComponent(key) + '=' + encodeURIComponent(evalParam(param[i][key]));
+          }
+        }
+        return _ret;
+      }
       return {
         get: function(url, headers, param,timeout, callBackFunc, callBackParam) {
           try{
         callBackParam.startTime =(new Date()).getTime();
           ajax.timeout = !timeout?500:timeout;
-          ajax.open('GET', url + '?' + paramToString(param), true);
+          ajax.open('GET', url +(param && param.length>0?'?':'') + paramToString(param), true);
           ajax.onreadystatechange = function() {
             if (ajax.readyState == 4 && ajax.status != 0) {
               console.info('HTTP response status:'+ajax.status);
@@ -278,23 +315,46 @@ var testCaseObj=null;
 
         },
         post: function(url, headers, param, timeout,callBackFunc, callBackParam) {
-            callBackParam.startTime =(new Date()).getTime();
+
+            try{
+              callBackParam.startTime =(new Date()).getTime();
            ajax.timeout = !timeout?500:timeout;
           ajax.open('POST', url, true);
           ajax.onreadystatechange = function() {
             if (ajax.readyState == 4 && ajax.status != 0) {
+              console.info('HTTP response status:'+ajax.status);
+              console.info('HTTP response response:'+ajax.responseText);
               callBackParam.endTime =(new Date()).getTime();
               callBackFunc(ajax.status, buildHeaders(ajax.getAllResponseHeaders()), ajax.responseText, callBackParam);
             }
           };
 
           ajax.ontimeout = function(){
-            console.error('time out:');
-                      callBackFunc(ajax.status, null, null, callBackParam);
+            console.error('on time out:'+ajax.timeout);
+            callBackFunc(_HTTP_TIME_OUT, null, 'resquest timed out at '+ajax.timeout+' ms.', callBackParam);
           };
+          ajax.onerror = function(er){
+            console.error('on error:'+er);
+            callBackFunc(_HTTP_ERROR, null, 'an error occured while making the request ', callBackParam);
+          };
+
+          ajax.onabort = function(){
+            console.error('on abort:');
+            callBackFunc(_HTTP_ABORT, null, 'the request is aborted', callBackParam);
+          };
+
           setHeaders(headers);
-          ajax.send(paramToString(param));
+          if(getHeader(headers,'Content-Type')=='application/x-www-form-urlencoded'){
+            ajax.send(paramToEncodeURIComponent(param));
+          }else{
+            ajax.send(callBackParam.req_params_raw);
+          }
+
+        }catch(er){
+          console.error('error :'+er);
+          callBackFunc(ajax.status, null, 'an error has occured while making the request', callBackParam);
         }
+      }//post
       };
     }
 

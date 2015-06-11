@@ -24,9 +24,41 @@
   text-decoration: none;
   background-color: rgb(77, 144, 254);
 }
+@-webkit-keyframes  startRecording {
 
+    from{  text-decoration: underline;color:#1B23EC!important;}
+    to{  text-decoration: none;  color:rgb(85, 85, 85);}
+
+}
+.testInprogress{
+
+    text-decoration: underline;
+    color:#1B23EC!important;;
+    font-weight: 600;
+
+
+    -webkit-animation-name: startRecording; /* Chrome, Safari, Opera */
+   -webkit-animation-duration: 1s; /* Chrome, Safari, Opera */
+   -webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
+
+}
+
+@-webkit-keyframes  startRecording {
+
+    0%{border: 2px solid rgb(221, 221, 221);  border-top:2px solid red;zoom:100%;}
+    25%{border: 2px solid rgb(221, 221, 221);  border-right:2px solid red;zoom:120%}
+    50%{border: 2px solid rgb(221, 221, 221);  border-bottom: 2px solid red;zoom:100%}
+    100%{border: 2px solid rgb(221, 221, 221);  border-left:2px solid red;zoom:120%}
+
+}
 .startRecording{
-  border:1px solid red;
+  font-weight: bold;
+border: 2px solid rgb(221, 221, 221);
+color: red!important;
+-webkit-animation-name: startRecording; /* Chrome, Safari, Opera */
+-webkit-animation-duration: 2s; /* Chrome, Safari, Opera */
+-webkit-animation-iteration-count: infinite; /* Chrome, Safari, Opera */
+
 }
 
           </style>
