@@ -60,8 +60,10 @@ function getCurrentTabUrl(callback) {
 document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById("loadTestTheRest").onclick = loadTestTheRest;
+  document.getElementById("recordSettings").onclick = recordSetting;
+  document.getElementById("faq").onclick = faq;
   document.getElementById("startRecord").onclick = startStopRecord;
-  document.getElementById("save").onclick = saveData;
+  //document.getElementById("save").onclick = saveData;
   chrome.runtime.getBackgroundPage(function(bgPage) {
     var className = document.getElementById("startRecord").className;
     if (bgPage.recorderSettings.isStarted) {
@@ -71,6 +73,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+function recordSetting(){
+  var b = chrome.extension.getURL("") + "settings.html";
+  chrome.tabs.create({
+    url: b
+  }), window.close()
+
+}
+function faq(){
+  var b = chrome.extension.getURL("") + "faq.html";
+  chrome.tabs.create({
+    url: b
+  }), window.close()
+
+}
+
 
 function loadTestTheRest() {
   chrome.runtime.getBackgroundPage(function(bgPage) {
@@ -78,7 +95,7 @@ function loadTestTheRest() {
     bgPage.requestDetails;
     var config =bgPage.importer();
     console.log();
-    var b = chrome.extension.getURL("") + "index3.html";
+    var b = chrome.extension.getURL("") + "index.html";
     chrome.tabs.create({
       url: b
     }), window.close()
