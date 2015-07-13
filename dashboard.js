@@ -1,14 +1,22 @@
-/*
 
- <li>
- <span><i class="icon-leaf"></i> Grand Child</span>
- <a href="">Goes somewhere</a>
- </li>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-64530524-1']);
+_gaq.push(['_trackPageview']);
 
 
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
 
-*/
 
+
+function mytracker(type,value){
+
+   _gaq.push(['_trackEvent', type, value]);
+
+}
 
 window.addEventListener('load', loadHandler);
 
@@ -20,7 +28,7 @@ function loadHandler() {
   window.initDash = function(struct) {
     window.dash = null;
     window.main = null;
-    window.main = testTheRest(jsNavi, eventBus);
+    window.main = testTheRest(jsonAssertions, eventBus);
     // main.executeTest(testData.tests[0]);
     var data = null;
     document.getElementById("consoleView").innerHTML = null;
@@ -125,6 +133,7 @@ var dashboard = function($doc, config) {
   consolechange();
 
   var play = function(event) {
+
     event = event || window.event;
     //event.target.data
     //  document.getElementById("statsView").style.display = "none";
@@ -145,14 +154,14 @@ var dashboard = function($doc, config) {
     //  var _statsEvent = new evntObj(EVENT_STATS,status);
     //  eventBus.notify(_statsEvent)
     document.getElementById("progress").style.display = "none";
-
+      mytracker('Run',  ''+status.testcase.total);
   }
 
   var copy = function(event) {
     event = event || window.event;
     //console.log(event.target.parentElement.parentElement.getAttribute('data'))
-    var ev = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
-    var parent = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('parent'));
+    var ev = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('data'));
+    var parent = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('parent'));
     var parentNode = event.target.parentElement.parentElement.parentElement;
     if (parent && ev) {
       var newObject = JSON.parse(JSON.stringify(ev));
@@ -186,7 +195,7 @@ var dashboard = function($doc, config) {
     var ids = event.target.getAttribute('data').split("-");
     var id = ids[0];
     var key = ids[2];
-    var ev = jsNavi.startValidation(config, document.getElementById(id).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(id).getAttribute('data'));
     if (ev.req_headers) {
       delete ev.req_headers[key];
 
@@ -204,7 +213,7 @@ var dashboard = function($doc, config) {
     var value = '_blank';
     var rowElement = document.getElementById('headers' + elementId);
 
-    var ev = jsNavi.startValidation(config, document.getElementById(elementId).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(elementId).getAttribute('data'));
     if (!ev.req_headers) {
       ev.req_headers = [];
     }
@@ -242,7 +251,7 @@ var dashboard = function($doc, config) {
     var ids = event.target.getAttribute('data').split("-");
     var id = ids[0];
     var key = ids[2];
-    var ev = jsNavi.startValidation(config, document.getElementById(id).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(id).getAttribute('data'));
     if (ev.req_params) {
       delete ev.req_params[key];
 
@@ -260,7 +269,7 @@ var dashboard = function($doc, config) {
     var value = '_blank';
     var rowElement = document.getElementById('params' + elementId);
 
-    var ev = jsNavi.startValidation(config, document.getElementById(elementId).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(elementId).getAttribute('data'));
     if (!ev.req_params) {
       ev.req_params = [];
     }
@@ -299,7 +308,7 @@ var dashboard = function($doc, config) {
     var ids = event.target.getAttribute('data').split("-");
     var id = ids[0];
     var key = ids[2];
-    var ev = jsNavi.startValidation(config, document.getElementById(id).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(id).getAttribute('data'));
     if (ev.res_assertions) {
       delete ev.res_assertions[key];
 
@@ -317,7 +326,7 @@ var dashboard = function($doc, config) {
     var value = 'true';
     var rowElement = document.getElementById('assert' + elementId);
 
-    var ev = jsNavi.startValidation(config, document.getElementById(elementId).getAttribute('data'));
+    var ev = jsonParser.parse(config, document.getElementById(elementId).getAttribute('data'));
     if (!ev.res_assertions) {
       ev.res_assertions = [];
     }
@@ -333,7 +342,7 @@ var dashboard = function($doc, config) {
     ev.res_assertions.push(assert);
 
 
-    var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" selected >header</option><option id="response" value="response">response</option></select>'
+    var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" selected >header</option><option id="response" value="response">response</option><option id="statusCode" value="statusCode">statusCode</option></select>'
     var assertWrap = '<div class="row"><div class="col-xs-4">' +
       '<a  data="' + elementId + '-formTestAssert-' + assert.assertName + '" class="deleteAssertElement" >-</a>' +
       'key : <input class="formTestinput" type="text" id="' + elementId + '-formTestAssertion-key-'+index+'" value="' + assert.assertName + '"></div>' +
@@ -362,9 +371,9 @@ var dashboard = function($doc, config) {
 
   var save = function(event) {
     var e = event || window.event;
-    var ev = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
+    var ev = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('data'));
     var elementId = event.target.parentElement.parentElement.getAttribute('id')
-    var parent = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('parent'));
+    var parent = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('parent'));
     var parentNode = event.target.parentElement.parentElement.parentElement;
 
     if (parent && ev) {
@@ -463,8 +472,8 @@ var dashboard = function($doc, config) {
     var testForm = document.getElementById("testform" + elementId);
     if (testForm.style.display === 'none') {
       //console.log(event.target.parentElement.parentElement.getAttribute('data'))
-      var ev = jsNavi.startValidation(config, e.target.parentElement.parentElement.getAttribute('data'));
-      var parent = jsNavi.startValidation(config, e.target.parentElement.parentElement.getAttribute('parent'));
+      var ev = jsonParser.parse(config, e.target.parentElement.parentElement.getAttribute('data'));
+      var parent = jsonParser.parse(config, e.target.parentElement.parentElement.getAttribute('parent'));
       var parentNode = e.target.parentElement.parentElement.parentElement;
 
 
@@ -543,7 +552,7 @@ var dashboard = function($doc, config) {
               //var key = Object.keys(assert);
 
               //  document.getElementById(elementId+'-formTestAssertion-type').value=key;
-              var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" ' + (assert.assertType == "header" ? "selected" : "") + '>header</option><option id="response" value="response"' + (assert.assertType == "response" ? "selected" : "") + '>response</option></select>'
+              var selection = '<select  class="formTestinput" id="' + elementId + '-formTestAssertion-type" ><option id="header" value="header" ' + (assert.assertType == "header" ? "selected" : "") + '>header</option><option id="response" value="response"' + (assert.assertType == "response" ? "selected" : "") + '>response</option><option id="statusCode" value="statusCode"' + (assert.assertType == "statusCode" ? "selected" : "") + '>statusCode</option></select>'
 
 
               var rowdeleteTestAsset = document.createElement('div');
@@ -635,8 +644,8 @@ var dashboard = function($doc, config) {
     console.log("Deleted.........");
     event = event || window.event;
     // console.log(event.target.parentElement.parentElement.getAttribute('data'))
-    var ev = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
-    var parent = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('parent'));
+    var ev = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('data'));
+    var parent = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('parent'));
     var parentNode = event.target.parentElement.parentElement.parentElement;
     if (parent) {
       var ind = null;
@@ -684,6 +693,7 @@ var dashboard = function($doc, config) {
 
     }
     document.getElementById("uploadFile").value = file.name;
+      mytracker('Upload',  ''+file.Size);
   };
 
 
@@ -693,6 +703,7 @@ var dashboard = function($doc, config) {
 
     ev.target.href = "data:text/json;charset=UTF-8," + encodeURIComponent(st);
     ev.target.download = "testCases.json";
+        mytracker('exportTestCase',  "1");
     return true;
   }
   var exportResult = function(event) {
@@ -726,7 +737,7 @@ var dashboard = function($doc, config) {
 
 
 
-    var ev = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
+    var ev = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('data'));
     if (ev.projectName) {
       csvData += getheaderResult();
       csvData += getTestSuitsResult(ev.projectName, ev.testSuits);
@@ -736,7 +747,7 @@ var dashboard = function($doc, config) {
 
     event.target.href = "data:text/csv;charset=UTF-8," + encodeURIComponent(csvData);
     event.target.download = "result.csv";
-
+    mytracker('exportResult',  "1");
     return true;
 
   }
@@ -847,8 +858,8 @@ var drop =function(event) {
     var elementId = event.dataTransfer.getData("id");
     var element = document.getElementById(elementId);
 
-    var ev = jsNavi.startValidation(config, element.getAttribute('data'));
-    var parent = jsNavi.startValidation(config, element.getAttribute('parent'));
+    var ev = jsonParser.parse(config, element.getAttribute('data'));
+    var parent = jsonParser.parse(config, element.getAttribute('parent'));
     var parentNode = element.parentElement;
     if (parent && ev) {
       var ind = null;
@@ -872,7 +883,7 @@ var drop =function(event) {
       if (ind != null) {
         parent.splice(ind, 1);
 
-        var newParent = jsNavi.startValidation(config, event.target.parentElement.parentElement.getAttribute('data'));
+        var newParent = jsonParser.parse(config, event.target.parentElement.parentElement.getAttribute('data'));
         newParent.tests.push(newObject);
 
         // parentNode.removeChild(event.target.parentElement.parentElement);

@@ -1,7 +1,7 @@
 {
   "name": "Test the Rest!",
   "description": "Test the Rest.",
-  "version": "0.21.8",
+  "version": "0.21.11",
   "author":"Vishal Joshi",
   "manifest_version": 2,
   "browser_action": {
@@ -20,6 +20,8 @@
     "activeTab",
     "webRequest",
     "webRequestBlocking",
-    "http://*/"
-  ]
+    "http://*/",
+    "storage"
+  ],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
 }

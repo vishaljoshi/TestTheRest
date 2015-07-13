@@ -15,7 +15,7 @@
 
 
 
-var testTheRest = function(jsNavi,eventBus) {
+var testTheRest = function(jsonAssertions,eventBus) {
 
 var testCaseObj=null;
 
@@ -55,7 +55,9 @@ var testCaseObj=null;
     var validateTest = function(status, headers, response, test) {
       $self.stats.testcase.total++;
       var errorMessage=null;
-      if (status == 200) {
+      test.res_assertions
+
+      //if (status == test.http_status) {
         if (typeof response == 'string' || response instanceof String){
           try{
             response = JSON.parse(response);
@@ -70,9 +72,12 @@ var testCaseObj=null;
             $self.stats.asserts.total++;
             var ev=null;
             if(test.res_assertions[i].assertType && test.res_assertions[i].assertType=="response"){
-              var ev = jsNavi.startValidation(response, test.res_assertions[i].expression);
+               ev = jsonAssertions.assert(response, test.res_assertions[i].expression);
+            }else if(test.res_assertions[i].assertType && test.res_assertions[i].assertType=="statusCode"){
+               ev = status==test.res_assertions[i].expression
             }else{
-              ev = jsNavi.startValidation(headers, test.res_assertions[i].expression);
+
+              ev = jsonAssertions.assert(headers, test.res_assertions[i].expression);
             }
 
             test.res_assertions[i].assertStatus = _TEST_STATUS_PASS;
@@ -96,12 +101,12 @@ var testCaseObj=null;
         } else {
           console.warn("error,no assertions");
         }
-      } else {
+      /*} else {
         test.testStatus =_TEST_STATUS_FAIL;
         $self.stats.testcase.fail++
         errorMessage= "test case failed : bad response from the server HTTP status:"+status+ ", "+response;
         console.error(errorMessage);
-      }
+      }*/
 
       var _statsEvent = new evntObj(EVENT_STATS,{'stats':$self.stats,'testId':test.id,'testStatus':test.testStatus,'errorMessage':errorMessage});
       eventBus.notify(_statsEvent)
@@ -177,7 +182,7 @@ var testCaseObj=null;
           if((typeof param == 'string' || param instanceof String) && (param=param.trim())!=='' ){
             if(param.indexOf('=')==0){
                value= param.substring(1,param.length);
-              value = jsNavi.startValidation(testCaseObj, value);
+              value = jsonAssertions.jsonParser.parse(testCaseObj, value);
               //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
             }/*else if(param.indexOf('=')==0){
               headerValue=headers[keys[i]];
@@ -397,7 +402,7 @@ var testCaseObj=null;
         fail: 0
       }
     }
-    var ev = jsNavi.startValidation(testConfi, runConfi);
+    var ev = jsonAssertions.jsonParser.parse(testConfi, runConfi);
 
      var testQueue = new Array();
 
