@@ -1,7 +1,7 @@
 {
   "name": "Test the Rest!",
   "description": "Test the Rest.",
-  "version": "0.21.13",
+  "version": "0.21.14",
   "author":"Vishal Joshi",
   "manifest_version": 2,
   "browser_action": {
