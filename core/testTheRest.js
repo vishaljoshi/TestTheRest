@@ -12,7 +12,7 @@
 
  var EVENT_STATS='EVENT_STATS';
 
-
+var version=1.1
 
 
 var testTheRest = function(jsonAssertions,eventBus) {
@@ -91,7 +91,7 @@ var testCaseObj=null;
             }
           }
           test.testStatus = testStatus;
-          //test.req_body = response;
+          //test.res_body = response;
           test.res_headers=headers;
           if (test.testStatus == _TEST_STATUS_FAIL) {
             $self.stats.testcase.fail++
@@ -180,8 +180,8 @@ var testCaseObj=null;
 
         if (param) {
           if((typeof param == 'string' || param instanceof String) && (param=param.trim())!=='' ){
-            if(param.indexOf('=')==0){
-               value= param.substring(1,param.length);
+            if(param.indexOf('$.')==0){
+               value= param.substring(2,param.length);
               value = jsonAssertions.jsonParser.parse(testCaseObj, value);
               //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
             }/*else if(param.indexOf('=')==0){
@@ -380,6 +380,19 @@ var testCaseObj=null;
     }
   }();
 
+var getTestCaseValue = function(testCaseObj,current,value){
+
+  if(param.indexOf('$.')==0){
+     value= param.substring(2,param.length);
+    value = jsonAssertions.jsonParser.parse(testCaseObj, value);
+    //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
+  }else if(param.indexOf('$testSuit')==0){
+     value= param.substring(2,param.length);
+    value = jsonAssertions.jsonParser.parse(testCaseObj, value);
+    //console.log(jsNavi.startValidation(testCaseObj, 'projects[0].testSuits[0].tests[0].res_headers.head'));
+  }
+}
+
 
 
   var runner = function(testConfi, runConfi ,completedFunc) {
@@ -401,6 +414,13 @@ var testCaseObj=null;
         total: 0,
         fail: 0
       }
+    }
+    if(!testConfi.version){
+      testConfi.version =version;
+    }
+    if(testConfi.version!==version){
+      console.info('Test case version '+testConfi.version+' is not compatible with version '+version);
+      return;
     }
     var ev = jsonAssertions.jsonParser.parse(testConfi, runConfi);
 

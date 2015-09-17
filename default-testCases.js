@@ -1,4 +1,9 @@
 var defaultStruct = {
+  "version":1.1,
+  "commons" :{
+    "testing":"function(a){return a+'-t'}",
+    "baseeUrl":"localhost"
+  },
   "projects": [{
       "projectName": "default project",
       "projectDesc": "this is a first test 1 project",
